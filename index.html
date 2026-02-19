@@ -992,33 +992,44 @@
     document.getElementById('home-page').style.display = page === 'home' ? 'block' : 'none';
     document.getElementById('about-page').style.display = page === 'about' ? 'block' : 'none';
 
+    // Re-check all fade-in elements now that a page is visible
+    setTimeout(observeAll, 50);
+
     if (scrollTo) {
-      // Switch page first, then scroll to the section after a tiny delay
-      // The delay lets the page finish showing before we try to scroll
       setTimeout(function() {
         var target = document.getElementById(scrollTo);
         if (target) target.scrollIntoView({ behavior: 'smooth' });
       }, 50);
     } else {
-      // No section specified — just go to the top
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 
   // ── INTERSECTION OBSERVER ──
+  // threshold: 0 means "trigger as soon as even 1px is visible"
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(el => {
       if (el.isIntersecting) el.target.classList.add('visible');
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0 });
 
-  document.querySelectorAll('.fade-in:not(.visible)').forEach(el => observer.observe(el));
-
-  // Re-observe when switching pages
-  const mo = new MutationObserver(() => {
+  function observeAll() {
     document.querySelectorAll('.fade-in:not(.visible)').forEach(el => observer.observe(el));
+  }
+
+  observeAll();
+
+  // Re-observe when switching pages (e.g. going back to home from about)
+  const mo = new MutationObserver(() => {
+    observeAll();
   });
   mo.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
+
+  // Safety net: after 1 second, make ALL fade-in elements visible
+  // This catches anything the observer missed (e.g. elements already in view on load)
+  setTimeout(function() {
+    document.querySelectorAll('.fade-in').forEach(el => el.classList.add('visible'));
+  }, 800);
 
   // ── EMAIL SIGNUP ──
   function handleSignup(e) {
