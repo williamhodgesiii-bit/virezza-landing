@@ -7,6 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <!-- Supabase: this loads the tool that lets us save emails to your database -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -982,11 +985,11 @@
   <span>© 2025 Virezza. All rights reserved.</span>
   <div style="display:flex; gap:1.5rem;">
     <a href="#" onclick="showPage('about'); return false;">Our Story</a>
-    <a href="mailto:hello@virezza.com">Contact</a>
+    <a href="/cdn-cgi/l/email-protection#b0d8d5dcdcdff0c6d9c2d5cacad19ed3dfdd">Contact</a>
   </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // ── PAGE SWITCHING ──
   function showPage(page) {
     document.getElementById('home-page').style.display = page === 'home' ? 'block' : 'none';
@@ -1009,18 +1012,41 @@
   });
   mo.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
 
+  // ── SUPABASE SETUP ──
+  // This connects your site to your Supabase database
+  // (we use "sbClient" as the variable name to avoid a naming conflict with the Supabase library itself)
+  const sbClient = window.supabase.createClient(
+    'https://rnevtptdxzbkbtotjszj.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJuZXZ0cHRkeHpia2J0b3Rqc3pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE1MTk4NzQsImV4cCI6MjA4NzA5NTg3NH0.n4v_n_3qd95ADxpnJ7aK9QtVDEa7E_680BASxerzM4Y'
+  );
+
   // ── EMAIL SIGNUP ──
-  function handleSignup(e) {
+  async function handleSignup(e) {
     e.preventDefault();
+
     const email = document.getElementById('email-input').value;
     if (!email) return;
 
-    // Store locally (in a real app, POST to your backend/Supabase here)
-    const signups = JSON.parse(localStorage.getItem('virezza_signups') || '[]');
-    signups.push({ email, date: new Date().toISOString() });
-    localStorage.setItem('virezza_signups', JSON.stringify(signups));
+    // Disable button so people cannot click twice
+    const btn = document.querySelector('#signup-form button');
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
 
-    // Show success
+    // Send the email to your Supabase "signups" table
+    const { error } = await sbClient
+      .from('signups')
+      .insert({ email: email });
+
+    if (error) {
+      // Something went wrong
+      btn.disabled = false;
+      btn.textContent = 'Get Early Access';
+      alert('Oops! Something went wrong. Please try again.');
+      console.error('Supabase error:', error.message);
+      return;
+    }
+
+    // Success! Hide form and show thank-you message
     document.getElementById('signup-form').style.display = 'none';
     const msg = document.getElementById('success-msg');
     msg.style.display = 'flex';
