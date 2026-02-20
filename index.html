@@ -97,7 +97,7 @@
     .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
     .btn-ghost:hover { border-color: rgba(255,255,255,0.22); background: rgba(255,255,255,0.05); }
 
-    section { position: relative; z-index: 2; }
+    section { position: relative; z-index: 1; }
     .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
 
     /* HERO */
@@ -458,28 +458,28 @@
       top: 0; bottom: 0;
       width: 110px;
       pointer-events: none;
-      z-index: 1;
       background-repeat: repeat-y;
-      background-size: 110px 420px;
-      opacity: 0.7;
+      background-size: 110px 600px;
+      opacity: 0.22;
+      z-index: 10;
     }
     .ticker-left {
       left: 0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='110' height='420'%3E%3Cpolyline points='72,0 58,28 80,56 50,84 68,112 42,140 74,168 36,196 62,224 28,252 70,280 22,308 60,336 32,364 52,392 40,420' stroke='%23f07264' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpolyline points='72,0 58,28 80,56 50,84 68,112 42,140 74,168 36,196 62,224 28,252 70,280 22,308 60,336 32,364 52,392 40,420' stroke='%233de8d8' stroke-width='1' fill='none' stroke-linecap='round' opacity='0.6'/%3E%3C/svg%3E");
-      animation: tickDn 18s linear infinite;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='110' height='600'%3E%3Cpolyline points='65,0 52,18 78,34 44,52 70,68 38,86 72,102 34,118 60,136 26,152 68,168 30,184 74,200 42,216 66,232 36,248 78,264 48,280 62,296 28,312 70,328 32,344 76,360 40,376 64,392 24,408 72,424 36,440 68,456 28,472 80,488 44,504 60,520 22,536 74,552 38,568 66,584 30,600 65,600' stroke='%23f07264' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpolyline points='65,0 52,18 78,34 44,52 70,68 38,86 72,102 34,118 60,136 26,152 68,168 30,184 74,200 42,216 66,232 36,248 78,264 48,280 62,296 28,312 70,328 32,344 76,360 40,376 64,392 24,408 72,424 36,440 68,456 28,472 80,488 44,504 60,520 22,536 74,552 38,568 66,584 30,600 65,600' stroke='%233de8d8' stroke-width='0.8' fill='none' stroke-linecap='round' stroke-linejoin='round' opacity='0.55'/%3E%3C/svg%3E");
+      animation: tickDn 22s linear infinite;
     }
     .ticker-right {
       right: 0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='110' height='420'%3E%3Cpolyline points='38,0 52,28 28,56 60,84 42,112 70,140 34,168 80,196 46,224 88,252 36,280 76,308 50,336 64,364 42,392 56,420' stroke='%237a8cff' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpolyline points='38,0 52,28 28,56 60,84 42,112 70,140 34,168 80,196 46,224 88,252 36,280 76,308 50,336 64,364 42,392 56,420' stroke='%233de8d8' stroke-width='1' fill='none' stroke-linecap='round' opacity='0.6'/%3E%3C/svg%3E");
-      animation: tickUp 14s linear infinite;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='110' height='600'%3E%3Cpolyline points='45,0 62,18 32,34 74,52 48,68 86,84 36,100 78,116 52,132 92,148 38,164 80,180 46,196 84,212 40,228 76,244 50,260 90,276 34,292 72,308 44,324 88,340 36,356 80,372 48,388 84,404 38,420 76,436 42,452 88,468 30,484 74,500 46,516 86,532 32,548 78,564 44,580 80,596 45,600' stroke='%237a8cff' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpolyline points='45,0 62,18 32,34 74,52 48,68 86,84 36,100 78,116 52,132 92,148 38,164 80,180 46,196 84,212 40,228 76,244 50,260 90,276 34,292 72,308 44,324 88,340 36,356 80,372 48,388 84,404 38,420 76,436 42,452 88,468 30,484 74,500 46,516 86,532 32,548 78,564 44,580 80,596 45,600' stroke='%233de8d8' stroke-width='0.8' fill='none' stroke-linecap='round' stroke-linejoin='round' opacity='0.55'/%3E%3C/svg%3E");
+      animation: tickUp 16s linear infinite;
     }
     @keyframes tickDn {
       from { background-position: 0 0; }
-      to   { background-position: 0 420px; }
+      to   { background-position: 0 600px; }
     }
     @keyframes tickUp {
       from { background-position: 0 0; }
-      to   { background-position: 0 -420px; }
+      to   { background-position: 0 -600px; }
     }
     @media (max-width: 768px) {
       .ticker-left, .ticker-right { display: none; }
