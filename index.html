@@ -172,17 +172,13 @@
     .whatif-block { background: rgba(255,255,255,0.035) !important; }
 
     /* CREATOR CARDS */
-    .cards-float { position: relative; height: 420px; }
+    .cards-float { position: relative; /* height set in UPGRADE 1 block below */ }
     .creator-card {
       position: absolute; background: var(--card); border: 1px solid var(--border);
       border-radius: 20px; padding: 1.2rem 1.4rem; backdrop-filter: blur(10px); min-width: 190px;
       transition: transform 0.4s ease, box-shadow 0.4s ease;
     }
     .creator-card:hover { transform: translateY(-6px) !important; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
-    .creator-card:nth-child(1) { top: 20px; left: 0; animation: float1 6s ease-in-out infinite; }
-    .creator-card:nth-child(2) { top: 60px; right: 10px; animation: float2 7s ease-in-out infinite; }
-    .creator-card:nth-child(3) { bottom: 40px; left: 30px; animation: float1 8s ease-in-out infinite reverse; }
-    .creator-card:nth-child(4) { bottom: 60px; right: 0; animation: float2 5.5s ease-in-out infinite; }
     @keyframes float1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
     @keyframes float2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
     .card-top { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.8rem; }
@@ -423,7 +419,7 @@
     /* RESPONSIVE */
     @media (max-width: 768px) {
       .hero-inner { grid-template-columns: 1fr; gap: 3rem; }
-      .cards-float { height: 280px; }
+      .cards-float { height: 380px; }
       .creator-card { min-width: 150px; }
       .steps-grid { grid-template-columns: 1fr; gap: 1rem; }
       .compete-inner { grid-template-columns: 1fr; }
@@ -433,10 +429,190 @@
       .email-form input { padding: 0.5rem 0; }
       .btn { width: 100%; justify-content: center; }
       footer { flex-direction: column; text-align: center; }
+      /* Hide tickers on mobile */
+      .ticker-left, .ticker-right { display: none; }
     }
+
+    /* ── UPGRADE 1 — expanded cards-float ── */
+    .cards-float { position: relative; height: 560px; }
+
+    /* Asymmetric non-overlapping positions — intentional visual rhythm */
+    .creator-card:nth-child(1) {
+      top: 0px; left: 4px;
+      animation: float1 6s ease-in-out infinite;
+    }
+    .creator-card:nth-child(2) {
+      top: 90px; right: 0px;
+      animation: float2 7.5s ease-in-out infinite;
+    }
+    .creator-card:nth-child(3) {
+      top: 290px; left: 24px;
+      animation: float1 8s ease-in-out infinite reverse;
+    }
+    .creator-card:nth-child(4) {
+      top: 370px; right: 16px;
+      animation: float2 6s ease-in-out infinite;
+    }
+
+    /* ── UPGRADE 2 — margin ticker rails ── */
+    .ticker-left,
+    .ticker-right {
+      position: fixed;
+      top: 0;
+      width: 140px;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.18;
+      overflow: hidden;
+    }
+    .ticker-left  { left: 0; }
+    .ticker-right { right: 0; }
+
+    .ticker-left svg,
+    .ticker-right svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Left ticker: slow rightward drift via translateX */
+    @keyframes tickerDriftL {
+      0%   { transform: translateY(0px); }
+      100% { transform: translateY(-320px); }
+    }
+    /* Right ticker: slightly different speed */
+    @keyframes tickerDriftR {
+      0%   { transform: translateY(-260px); }
+      100% { transform: translateY(0px); }
+    }
+
+    .ticker-left  .ticker-path { animation: tickerDriftL 28s linear infinite; }
+    .ticker-right .ticker-path { animation: tickerDriftR 22s linear infinite; }
   </style>
 </head>
 <body>
+
+<!-- ── TICKER RAILS — fixed margin chart lines ── -->
+
+<!-- LEFT TICKER: coral→gold line, erratic angular market movement, drifts upward -->
+<div class="ticker-left" aria-hidden="true">
+  <svg viewBox="0 0 140 1400" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="tgL" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="#f07264" stop-opacity="0.9"/>
+        <stop offset="40%"  stop-color="#f5b06e" stop-opacity="0.7"/>
+        <stop offset="75%"  stop-color="#3de8d8" stop-opacity="0.6"/>
+        <stop offset="100%" stop-color="#7a8cff" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="glowL">
+        <feGaussianBlur stdDeviation="1.5" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <!-- Segment 1: opening range, establishing base -->
+    <g class="ticker-path" filter="url(#glowL)">
+      <polyline
+        stroke="url(#tgL)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+        points="
+          90,10   82,38   95,52   78,74   88,90
+          70,108  80,122  65,140  75,158  60,174
+          72,192  58,210  68,228  54,248  66,264
+          50,282  62,298  48,318  58,334  44,354
+          56,370  42,390  54,408  40,426  52,444
+          38,464  50,480  36,500  46,516  32,536
+          44,554  30,570  40,588  26,608  36,622
+          22,642  34,658  20,678  30,694  18,714
+          28,730  16,750  26,764  14,784  22,800
+          32,818  18,836  28,852  14,872  24,888
+          10,908  20,924   8,944  18,960   6,980
+          16,996   4,1016 14,1032  2,1052 12,1068
+          22,1084 10,1104 20,1118  8,1138 18,1154
+          28,1170 16,1190 26,1204 14,1224 24,1240
+          34,1256 22,1276 32,1290 20,1310 30,1326
+          40,1342 28,1362 38,1376 26,1396 36,1400
+        "
+      />
+      <!-- Small volume bars along left edge -->
+      <line x1="4"  y1="60"  x2="12" y2="60"  stroke="#f07264" stroke-width="1" stroke-opacity="0.5"/>
+      <line x1="4"  y1="140" x2="9"  y2="140" stroke="#f5b06e" stroke-width="1" stroke-opacity="0.4"/>
+      <line x1="4"  y1="220" x2="14" y2="220" stroke="#f07264" stroke-width="1" stroke-opacity="0.5"/>
+      <line x1="4"  y1="300" x2="8"  y2="300" stroke="#3de8d8" stroke-width="1" stroke-opacity="0.4"/>
+      <line x1="4"  y1="380" x2="13" y2="380" stroke="#f5b06e" stroke-width="1" stroke-opacity="0.45"/>
+      <line x1="4"  y1="460" x2="7"  y2="460" stroke="#3de8d8" stroke-width="1" stroke-opacity="0.4"/>
+      <line x1="4"  y1="540" x2="11" y2="540" stroke="#f07264" stroke-width="1" stroke-opacity="0.5"/>
+      <line x1="4"  y1="620" x2="9"  y2="620" stroke="#7a8cff" stroke-width="1" stroke-opacity="0.4"/>
+      <line x1="4"  y1="700" x2="15" y2="700" stroke="#f5b06e" stroke-width="1" stroke-opacity="0.45"/>
+      <line x1="4"  y1="780" x2="8"  y2="780" stroke="#3de8d8" stroke-width="1" stroke-opacity="0.4"/>
+      <line x1="4"  y1="860" x2="12" y2="860" stroke="#f07264" stroke-width="1" stroke-opacity="0.5"/>
+      <line x1="4"  y1="940" x2="7"  y2="940" stroke="#7a8cff" stroke-width="1" stroke-opacity="0.35"/>
+      <line x1="4" y1="1020" x2="14" y2="1020" stroke="#f5b06e" stroke-width="1" stroke-opacity="0.45"/>
+      <line x1="4" y1="1100" x2="9"  y2="1100" stroke="#3de8d8" stroke-width="1" stroke-opacity="0.4"/>
+      <line x1="4" y1="1180" x2="11" y2="1180" stroke="#f07264" stroke-width="1" stroke-opacity="0.5"/>
+      <line x1="4" y1="1260" x2="7"  y2="1260" stroke="#7a8cff" stroke-width="1" stroke-opacity="0.35"/>
+      <line x1="4" y1="1340" x2="13" y2="1340" stroke="#f5b06e" stroke-width="1" stroke-opacity="0.45"/>
+    </g>
+  </svg>
+</div>
+
+<!-- RIGHT TICKER: teal→blue line, wider swings, different rhythm, drifts downward -->
+<div class="ticker-right" aria-hidden="true">
+  <svg viewBox="0 0 140 1400" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="tgR" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="#7a8cff" stop-opacity="0.9"/>
+        <stop offset="35%"  stop-color="#3de8d8" stop-opacity="0.75"/>
+        <stop offset="70%"  stop-color="#f5b06e" stop-opacity="0.6"/>
+        <stop offset="100%" stop-color="#f07264" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="glowR">
+        <feGaussianBlur stdDeviation="1.5" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <g class="ticker-path" filter="url(#glowR)">
+      <polyline
+        stroke="url(#tgR)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+        points="
+          50,10   62,32   46,50   70,68   54,88
+          78,104  60,124  82,140  66,160  90,178
+          72,196  96,214  78,234 100,250  82,270
+         106,286  88,306 112,322  94,342 118,358
+         100,378 124,394 108,414 130,430 114,450
+         136,466 120,486 136,502 118,522 134,538
+         116,558 132,574 114,594 130,610 112,630
+         128,646 110,666 126,682 108,702 124,718
+         106,738 122,754 104,774 120,790 102,810
+         118,826 100,846 116,862  98,882 114,898
+          96,918 112,934  94,954 110,970  92,990
+         108,1006 90,1026 106,1042 88,1062 104,1078
+          86,1098 102,1114 84,1134 100,1150 82,1170
+          98,1186 80,1206 96,1222 78,1242 94,1258
+          76,1278 92,1294 74,1314 90,1330 72,1350
+          88,1366 70,1386 86,1400
+        "
+      />
+      <!-- Small volume bars along right edge -->
+      <line x1="128" y1="50"  x2="136" y2="50"  stroke="#7a8cff" stroke-width="1" stroke-opacity="0.5"/>
+      <line x1="131" y1="130" x2="136" y2="130" stroke="#3de8d8" stroke-width="1" stroke-opacity="0.4"/>
+      <line x1="126" y1="210" x2="136" y2="210" stroke="#7a8cff" stroke-width="1" stroke-opacity="0.5"/>
+      <line x1="129" y1="290" x2="136" y2="290" stroke="#f5b06e" stroke-width="1" stroke-opacity="0.4"/>
+      <line x1="123" y1="370" x2="136" y2="370" stroke="#3de8d8" stroke-width="1" stroke-opacity="0.45"/>
+      <line x1="130" y1="450" x2="136" y2="450" stroke="#7a8cff" stroke-width="1" stroke-opacity="0.4"/>
+      <line x1="125" y1="530" x2="136" y2="530" stroke="#f07264" stroke-width="1" stroke-opacity="0.5"/>
+      <line x1="127" y1="610" x2="136" y2="610" stroke="#3de8d8" stroke-width="1" stroke-opacity="0.4"/>
+      <line x1="124" y1="690" x2="136" y2="690" stroke="#7a8cff" stroke-width="1" stroke-opacity="0.45"/>
+      <line x1="128" y1="770" x2="136" y2="770" stroke="#f5b06e" stroke-width="1" stroke-opacity="0.4"/>
+      <line x1="122" y1="850" x2="136" y2="850" stroke="#3de8d8" stroke-width="1" stroke-opacity="0.5"/>
+      <line x1="129" y1="930" x2="136" y2="930" stroke="#f07264" stroke-width="1" stroke-opacity="0.35"/>
+      <line x1="125" y1="1010" x2="136" y2="1010" stroke="#7a8cff" stroke-width="1" stroke-opacity="0.45"/>
+      <line x1="127" y1="1090" x2="136" y2="1090" stroke="#3de8d8" stroke-width="1" stroke-opacity="0.4"/>
+      <line x1="123" y1="1170" x2="136" y2="1170" stroke="#f5b06e" stroke-width="1" stroke-opacity="0.5"/>
+      <line x1="128" y1="1250" x2="136" y2="1250" stroke="#f07264" stroke-width="1" stroke-opacity="0.35"/>
+      <line x1="124" y1="1330" x2="136" y2="1330" stroke="#7a8cff" stroke-width="1" stroke-opacity="0.45"/>
+    </g>
+  </svg>
+</div>
 
 <!-- NAV -->
 <nav>
