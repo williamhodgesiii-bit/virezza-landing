@@ -178,13 +178,26 @@
     .signup { padding: 7rem 0; background: var(--bg2); }
     .signup-box { max-width: 560px; margin: 0 auto; text-align: center; }
     .signup-box p { color: var(--muted); font-size: 1rem; margin-bottom: 2.5rem; }
-    .email-form { display: flex; gap: 0.6rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 100px; padding: 0.4rem 0.4rem 0.4rem 1.4rem; transition: border-color 0.3s; }
-    .email-form:focus-within { border-color: rgba(255,107,74,0.4); box-shadow: 0 0 0 3px rgba(255,107,74,0.08); }
+    .email-form { display: flex; gap: 0.6rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 100px; padding: 0.4rem 0.4rem 0.4rem 1.4rem; transition: border-color 0.3s, box-shadow 0.3s; }
+    .email-form:focus-within { border-color: rgba(255,107,74,0.5); box-shadow: 0 0 0 4px rgba(255,107,74,0.1); }
+    .email-form.typing { border-color: rgba(255,107,74,0.65); box-shadow: 0 0 0 5px rgba(255,107,74,0.14); }
     .email-form input { flex: 1; background: none; border: none; outline: none; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; }
     .email-form input::placeholder { color: var(--muted); }
+    .email-form .btn-primary { transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease; }
+    .email-form.typing .btn-primary { transform: scale(1.02); box-shadow: 0 0 18px rgba(255,107,74,0.3); }
     .signup-note { font-size: 0.78rem; color: var(--muted); margin-top: 1rem; }
+    .social-proof { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.4rem; opacity: 0.75; letter-spacing: 0.01em; }
+    .social-proof .count-num { color: var(--text); font-weight: 600; }
+    @keyframes mintPulse { 0%{box-shadow:0 0 0 0 rgba(77,255,195,0.3)} 60%{box-shadow:0 0 0 16px rgba(77,255,195,0)} 100%{box-shadow:0 0 0 0 rgba(77,255,195,0)} }
     .success-state { display: none; flex-direction: column; align-items: center; gap: 0.8rem; padding: 2rem; background: rgba(77,255,195,0.06); border: 1px solid rgba(77,255,195,0.2); border-radius: 20px; color: var(--mint); }
+    .success-state.pulsing { animation: mintPulse 1.1s ease-out 2; }
     .success-state .check { font-size: 2rem; }
+    @keyframes fadeInUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+    .whats-next { margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid rgba(77,255,195,0.15); width: 100%; text-align: left; animation: fadeInUp 0.5s ease 0.2s both; }
+    .whats-next h4 { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mint); opacity: 0.7; margin-bottom: 0.75rem; }
+    .whats-next ol { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .whats-next ol li { font-size: 0.88rem; color: var(--muted); display: flex; align-items: baseline; gap: 0.55rem; }
+    .whats-next ol li::before { content: attr(data-n); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.75rem; color: var(--mint); opacity: 0.6; flex-shrink: 0; }
 
     /* ABOUT */
     #about-page { display: none; padding-top: 80px; }
@@ -424,6 +437,7 @@
         <div class="section-label" style="text-align:center">Early access</div>
         <h2 class="section-title" style="margin-bottom:0.5rem">Be first in line.</h2>
         <p>Drop your email. We'll let you know the moment Virezza goes live — plus early access perks.</p>
+        <p class="social-proof">Join <span class="count-num" id="fan-count">0</span> early fans already on the list.</p>
         <form class="email-form" id="signup-form" onsubmit="handleSignup(event)">
           <input type="email" id="email-input" placeholder="your@email.com" required autocomplete="email" />
           <button type="submit" class="btn btn-primary">Get Early Access</button>
@@ -432,6 +446,14 @@
           <div class="check">✅</div>
           <strong>You're on the list!</strong>
           <span style="font-size:0.85rem; color:var(--muted)">We'll be in touch soon. Get ready to trade influence.</span>
+          <div class="whats-next">
+            <h4>Here's what happens next:</h4>
+            <ol>
+              <li data-n="1.">We're building the private beta.</li>
+              <li data-n="2.">Early members get priority access.</li>
+              <li data-n="3.">First leagues launch soon.</li>
+            </ol>
+          </div>
         </div>
         <p class="signup-note">No spam. No selling your info. Just the launch update.</p>
       </div>
@@ -606,7 +628,51 @@
     }
 
     document.getElementById('signup-form').style.display = 'none';
-    document.getElementById('success-msg').style.display = 'flex';
+    var successEl = document.getElementById('success-msg');
+    successEl.style.display = 'flex';
+    // Mint pulse effect
+    successEl.classList.remove('pulsing');
+    void successEl.offsetWidth; // reflow to restart animation
+    successEl.classList.add('pulsing');
+  }
+
+  // COUNT-UP ANIMATION
+  function animateCount(el, target, duration) {
+    var start = 0;
+    var step = target / (duration / 16);
+    var current = 0;
+    var timer = setInterval(function() {
+      current = Math.min(current + step, target);
+      el.textContent = Math.floor(current).toLocaleString();
+      if (current >= target) clearInterval(timer);
+    }, 16);
+  }
+
+  // SCROLL OBSERVER for count-up
+  var countTriggered = false;
+  var signupSection = document.getElementById('signup');
+  if (signupSection) {
+    var observer = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting && !countTriggered) {
+        countTriggered = true;
+        var el = document.getElementById('fan-count');
+        if (el) animateCount(el, 1284, 1400);
+      }
+    }, { threshold: 0.3 });
+    observer.observe(signupSection);
+  }
+
+  // TYPING MICRO-INTERACTION
+  var emailInput = document.getElementById('email-input');
+  var emailForm  = document.getElementById('signup-form');
+  if (emailInput && emailForm) {
+    emailInput.addEventListener('input', function() {
+      if (emailInput.value.length > 0) {
+        emailForm.classList.add('typing');
+      } else {
+        emailForm.classList.remove('typing');
+      }
+    });
   }
 </script>
 
