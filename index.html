@@ -451,25 +451,74 @@
       animation: float2 6s ease-in-out infinite;
     }
 
-    /* ── TICKER RAILS ── */
+    /* ── TICKER RAILS — pure CSS ── */
     .ticker-left,
     .ticker-right {
       position: fixed;
       top: 0;
-      width: 120px;
+      width: 110px;
       height: 100vh;
       pointer-events: none;
       z-index: 1;
+      overflow: hidden;
     }
     .ticker-left  { left: 0; }
     .ticker-right { right: 0; }
-    .ticker-left canvas,
-    .ticker-right canvas {
+
+    /* The inner strip is 300vh tall and scrolls in a loop */
+    .ticker-track {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 300vh;
+    }
+    .ticker-left  .ticker-track { animation: tickScrollDown 35s linear infinite; }
+    .ticker-right .ticker-track { animation: tickScrollUp   26s linear infinite; }
+
+    @keyframes tickScrollDown {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-66.666%); }
+    }
+    @keyframes tickScrollUp {
+      from { transform: translateY(-66.666%); }
+      to   { transform: translateY(0); }
+    }
+
+    /* Each segment is one "candle row" — a horizontal zig-zag line */
+    .tick-seg {
+      position: relative;
+      height: 32px;
+      width: 100%;
+    }
+    /* The actual line — drawn with border-bottom + clip trick */
+    .tick-seg::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
       width: 100%;
       height: 100%;
-      display: block;
-      opacity: 0.28;
     }
+
+    /* Left ticker lines */
+    .ticker-left .tick-seg { border-bottom: 1.5px solid transparent; }
+
+    /* Right ticker lines */
+    .ticker-right .tick-seg { border-bottom: 1.5px solid transparent; }
+
+    /* Faded container */
+    .ticker-left  { opacity: 0.22; }
+    .ticker-right { opacity: 0.22; }
+
+    /* SVG lines inside each segment */
+    .ticker-left  .tick-svg,
+    .ticker-right .tick-svg {
+      display: block;
+      width: 100%;
+      height: 32px;
+    }
+
     @media (max-width: 768px) {
       .ticker-left, .ticker-right { display: none; }
     }
@@ -477,9 +526,63 @@
 </head>
 <body>
 
-<!-- ── TICKER RAILS ── -->
-<div class="ticker-left"  aria-hidden="true"><canvas id="tickerL"></canvas></div>
-<div class="ticker-right" aria-hidden="true"><canvas id="tickerR"></canvas></div>
+<!-- ── TICKER RAILS — pure CSS scrolling lines ── -->
+<div class="ticker-left" aria-hidden="true">
+  <div class="ticker-track" id="tickTrackL"></div>
+</div>
+<div class="ticker-right" aria-hidden="true">
+  <div class="ticker-track" id="tickTrackR"></div>
+</div>
+
+<script>
+// Build ticker segments with inline SVG — runs immediately, no sizing deps
+(function() {
+  // Left pattern: x values oscillate around center-left (market zigzag)
+  var leftPts  = [72,58,80,50,68,42,74,36,62,28,70,22,60,32,52,40,64,30,56,44,68,26,72,18,60,30,50,38,62,24,70];
+  // Right pattern: x values oscillate around center-right
+  var rightPts = [38,52,28,60,42,70,34,80,46,88,36,76,50,64,42,56,60,44,68,38,58,50,40,66,52,78,44,90,56,68,46];
+
+  var SEG_H = 28; // px per segment
+  var W = 110;
+
+  function buildTrack(el, pts, colorA, colorB) {
+    var html = '';
+    // Repeat 3× so translateY loop is seamless
+    for (var rep = 0; rep < 3; rep++) {
+      for (var i = 0; i < pts.length - 1; i++) {
+        var x1 = pts[i];
+        var x2 = pts[i + 1];
+        // Color interpolation between colorA and colorB
+        var t = i / (pts.length - 1);
+        html += '<svg width="' + W + '" height="' + SEG_H + '" viewBox="0 0 ' + W + ' ' + SEG_H + '" fill="none" style="display:block">' +
+          '<line x1="' + x1 + '" y1="0" x2="' + x2 + '" y2="' + SEG_H + '" stroke="' + lerpColor(colorA, colorB, t) + '" stroke-width="1.5" stroke-linecap="round"/>' +
+          // tiny volume tick
+          '<line x1="2" y1="' + (SEG_H/2) + '" x2="' + (2 + Math.round(4 + (i%5)*2)) + '" y2="' + (SEG_H/2) + '" stroke="' + lerpColor(colorA, colorB, t) + '" stroke-width="1" stroke-opacity="0.5"/>' +
+        '</svg>';
+      }
+    }
+    el.innerHTML = html;
+  }
+
+  function lerpColor(a, b, t) {
+    // a and b are [r,g,b] arrays
+    var r = Math.round(a[0] + (b[0]-a[0])*t);
+    var g = Math.round(a[1] + (b[1]-a[1])*t);
+    var bl = Math.round(a[2] + (b[2]-a[2])*t);
+    return 'rgb('+r+','+g+','+bl+')';
+  }
+
+  var coral  = [240, 114, 100];
+  var gold   = [245, 176, 110];
+  var teal   = [ 61, 232, 216];
+  var blue   = [122, 140, 255];
+
+  var trackL = document.getElementById('tickTrackL');
+  var trackR = document.getElementById('tickTrackR');
+  if (trackL) buildTrack(trackL, leftPts,  coral, teal);
+  if (trackR) buildTrack(trackR, rightPts, blue,  gold);
+})();
+</script>
 
 <!-- NAV -->
 <nav>
@@ -987,135 +1090,6 @@
       }, 420);
     }, 12000);
   })();
-</script>
-
-<script>
-// ── TICKER RAILS — Canvas renderer ──
-(function() {
-  if (window.innerWidth <= 768) return;
-
-  // Palette colours
-  var COLORS = ['#f07264', '#f5b06e', '#f5c87a', '#3de8d8', '#7a8cff'];
-
-  // Build a seeded deterministic market-like price series
-  function makeSeries(seed, length, w) {
-    var pts = [];
-    var price = w * 0.55;
-    var rng = seed;
-    function rand() {
-      rng = (rng * 16807 + 0) % 2147483647;
-      return (rng - 1) / 2147483646;
-    }
-    for (var i = 0; i < length; i++) {
-      // angular market move: small steps most of the time, occasional bigger jump
-      var move = (rand() - 0.49) * w * 0.18;
-      if (rand() > 0.82) move *= 2.4; // spike
-      price += move;
-      price = Math.max(w * 0.08, Math.min(w * 0.92, price));
-      pts.push(price);
-    }
-    return pts;
-  }
-
-  function initTicker(canvasEl, seed, colors, speedPx, direction) {
-    var parent = canvasEl.parentElement;
-    var W = parent.offsetWidth;
-    var H = parent.offsetHeight;
-    canvasEl.width  = W;
-    canvasEl.height = H;
-
-    // Generate enough points to fill 3× the canvas height so scroll loops cleanly
-    var segH  = 28;                       // pixels between y-points
-    var count = Math.ceil(H * 3 / segH) + 4;
-    var pts   = makeSeries(seed, count, W);
-
-    // Volume bars: position and width
-    var bars = [];
-    for (var b = 0; b < count; b += 4) {
-      bars.push({ yi: b, bw: 4 + Math.floor((seed * (b + 1)) % 11) });
-    }
-
-    var offset = 0;
-    var totalH = count * segH;            // total scrollable height
-
-    var ctx = canvasEl.getContext('2d');
-    var lastTs = null;
-
-    function draw(ts) {
-      if (lastTs === null) lastTs = ts;
-      var dt = ts - lastTs;
-      lastTs = ts;
-
-      offset = (offset + speedPx * dt / 1000) % totalH;
-
-      ctx.clearRect(0, 0, W, H);
-
-      // Draw two copies (current + wrapped) so the loop is seamless
-      for (var copy = 0; copy < 2; copy++) {
-        var baseY = -offset + copy * totalH;
-
-        // Gradient: coral → gold → teal → periwinkle across the full path height
-        var grad = ctx.createLinearGradient(0, baseY, 0, baseY + totalH);
-        for (var ci = 0; ci < colors.length; ci++) {
-          grad.addColorStop(ci / (colors.length - 1), colors[ci]);
-        }
-
-        // Main market line
-        ctx.beginPath();
-        ctx.strokeStyle = grad;
-        ctx.lineWidth   = 1.4;
-        ctx.lineJoin    = 'round';
-        ctx.lineCap     = 'round';
-
-        for (var pi = 0; pi < pts.length; pi++) {
-          var x = pts[pi];
-          var y = baseY + pi * segH;
-          if (pi === 0) ctx.moveTo(x, y);
-          else          ctx.lineTo(x, y);
-        }
-        ctx.stroke();
-
-        // Subtle glow pass (wider, very low alpha)
-        ctx.beginPath();
-        ctx.strokeStyle = colors[0];
-        ctx.lineWidth   = 4;
-        ctx.globalAlpha = 0.06;
-        for (var pi2 = 0; pi2 < pts.length; pi2++) {
-          var x2 = pts[pi2];
-          var y2 = baseY + pi2 * segH;
-          if (pi2 === 0) ctx.moveTo(x2, y2);
-          else           ctx.lineTo(x2, y2);
-        }
-        ctx.stroke();
-        ctx.globalAlpha = 1;
-
-        // Volume tick marks
-        for (var bi = 0; bi < bars.length; bi++) {
-          var byi = bars[bi].yi;
-          var by  = baseY + byi * segH;
-          var bx  = direction === 'left' ? 0 : W - bars[bi].bw;
-          var col = colors[Math.floor(byi / count * colors.length)];
-          ctx.fillStyle = col;
-          ctx.globalAlpha = 0.35;
-          ctx.fillRect(bx, by - 0.5, bars[bi].bw, 1.5);
-          ctx.globalAlpha = 1;
-        }
-      }
-
-      requestAnimationFrame(draw);
-    }
-
-    requestAnimationFrame(draw);
-  }
-
-  // Left: coral→gold→teal, drifts downward at 28px/s
-  var cL = document.getElementById('tickerL');
-  if (cL) initTicker(cL, 31337, ['#f07264','#f5b06e','#f5c87a','#3de8d8','#7a8cff'], 28, 'left');
-
-  // Right: periwinkle→teal→gold→coral (reversed), drifts downward at 22px/s (different speed)
-  var cR = document.getElementById('tickerR');
-  if (cR) initTicker(cR, 98761, ['#7a8cff','#3de8d8','#f5b06e','#f07264'], 22, 'right');
-})();
 </script>
 
 </body>
