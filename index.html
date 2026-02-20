@@ -456,56 +456,80 @@
         <div class="whatif-block">
           <div class="whatif-eyebrow">A thought experiment</div>
           <h3 class="whatif-headline">What if you saw it first?</h3>
-          <p class="whatif-sub">What if you bought MrBeast at 10,000 subscribers?</p>
+          <p class="whatif-sub">What if you bought MrBeast at 10,237 subscribers?</p>
 
           <div class="whatif-inner">
             <!-- START NODE -->
             <div class="whatif-node">
-              <div class="whatif-node-label">Then</div>
-              <div class="whatif-subs">10,000 subscribers</div>
-              <div class="whatif-price">$1.00</div>
+              <div class="whatif-node-label">Then · 2014</div>
+              <div class="whatif-subs">10,237 subscribers</div>
+              <div class="whatif-price">$0.84</div>
             </div>
 
             <!-- GROWTH CHART -->
-            <div class="whatif-chart-col">
-              <svg width="120" height="80" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <div class="whatif-chart-col" style="padding: 0 2rem;">
+              <svg width="260" height="110" viewBox="0 0 260 110" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">
                 <defs>
-                  <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#4dffc3" stop-opacity="0.9"/>
-                    <stop offset="100%" stop-color="#ff6b4a" stop-opacity="0.6"/>
+                  <linearGradient id="lineGrad2" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%"   stop-color="#ff6b4a" stop-opacity="0.9"/>
+                    <stop offset="50%"  stop-color="#b8a4d8" stop-opacity="0.9"/>
+                    <stop offset="100%" stop-color="#4dffc3" stop-opacity="1"/>
                   </linearGradient>
-                  <linearGradient id="fillGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#4dffc3" stop-opacity="0.12"/>
+                  <linearGradient id="fillGrad2" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%"   stop-color="#4dffc3" stop-opacity="0.1"/>
                     <stop offset="100%" stop-color="#4dffc3" stop-opacity="0"/>
                   </linearGradient>
                 </defs>
-                <!-- area fill -->
-                <path d="M10,72 C20,70 30,65 40,58 C55,46 65,32 80,18 C90,10 100,5 110,2 L110,76 L10,76 Z" fill="url(#fillGrad)"/>
-                <!-- curve line -->
-                <path d="M10,72 C20,70 30,65 40,58 C55,46 65,32 80,18 C90,10 100,5 110,2" stroke="url(#lineGrad)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-                <!-- start dot -->
-                <circle cx="10" cy="72" r="3.5" fill="#ff6b4a"/>
-                <!-- end dot -->
-                <circle cx="110" cy="2" r="4" fill="#4dffc3"/>
-                <circle cx="110" cy="2" r="7" fill="#4dffc3" opacity="0.2"/>
+
+                <!-- x-axis baseline -->
+                <line x1="20" y1="88" x2="244" y2="88" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+
+                <!-- area fill under curve -->
+                <path d="M20,86 C60,85 90,82 120,74 C150,64 175,44 200,24 C215,14 228,8 240,4 L240,88 L20,88 Z" fill="url(#fillGrad2)"/>
+
+                <!-- the curve — slow start, exponential steepen -->
+                <path d="M20,86 C60,85 90,82 120,74 C150,64 175,44 200,24 C215,14 228,8 240,4" stroke="url(#lineGrad2)" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+                <!-- data point 1: 2014 ~10k subs -->
+                <circle cx="20" cy="86" r="3" fill="#ff6b4a"/>
+
+                <!-- data point 2: 2017 ~8M subs -->
+                <circle cx="100" cy="78" r="2.5" fill="rgba(255,255,255,0.35)"/>
+                <line x1="100" y1="78" x2="100" y2="89" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="2,2"/>
+
+                <!-- data point 3: 2020 ~40M subs -->
+                <circle cx="170" cy="52" r="2.5" fill="rgba(255,255,255,0.35)"/>
+                <line x1="170" y1="52" x2="170" y2="89" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="2,2"/>
+
+                <!-- data point 4: 2024 ~402M subs -->
+                <circle cx="240" cy="4"  r="4"   fill="#4dffc3"/>
+                <circle cx="240" cy="4"  r="8"   fill="#4dffc3" opacity="0.15"/>
+                <line x1="240" y1="4"  x2="240" y2="89" stroke="rgba(77,255,195,0.12)" stroke-width="1" stroke-dasharray="2,2"/>
+
+                <!-- year labels -->
+                <text x="20"  y="101" text-anchor="middle" font-size="8" font-family="DM Sans, sans-serif" fill="rgba(139,133,153,0.7)">2014</text>
+                <text x="100" y="101" text-anchor="middle" font-size="8" font-family="DM Sans, sans-serif" fill="rgba(139,133,153,0.7)">2017</text>
+                <text x="170" y="101" text-anchor="middle" font-size="8" font-family="DM Sans, sans-serif" fill="rgba(139,133,153,0.7)">2020</text>
+                <text x="240" y="101" text-anchor="middle" font-size="8" font-family="DM Sans, sans-serif" fill="rgba(77,255,195,0.8)">2024</text>
               </svg>
+              <p style="font-size:0.7rem; color:var(--muted); opacity:0.45; margin-top:0.3rem; text-align:center;">Based on subscriber growth over 10 years.</p>
             </div>
 
             <!-- NOW NODE -->
             <div class="whatif-node" style="text-align:right; align-items:flex-end;">
-              <div class="whatif-node-label">Now</div>
-              <div class="whatif-subs">400,000,000+ subscribers</div>
-              <div class="whatif-price now">$40,000.00</div>
+              <div class="whatif-node-label">Now · 2024</div>
+              <div class="whatif-subs">402,318,944 subscribers</div>
+              <div class="whatif-price now">$33,742.65</div>
             </div>
           </div>
 
           <div style="text-align:center;">
-            <div class="whatif-growth-pct">↑ +3,999,900% growth</div>
+            <div class="whatif-growth-pct">↑ +4,018,137% growth</div>
           </div>
 
           <div class="whatif-coins">
             If you invested <strong>10,000 Virezza Coins</strong> early —
-            you'd now have <span class="highlight-coin">400,000,000 Coins.</span>
+            you'd now have <span class="highlight-coin">401,813,700 Coins.</span>
           </div>
         </div>
         <p class="whatif-disclaimer">Example shown for illustrative purposes only. Creator not affiliated.</p>
