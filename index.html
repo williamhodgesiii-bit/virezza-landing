@@ -152,6 +152,53 @@
     .step-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
     .step-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.65; }
 
+    /* WHAT IF BLOCK */
+    .whatif-wrap {
+      margin-top: 4rem;
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .whatif-wrap.in-view { opacity: 1; transform: translateY(0); }
+    .whatif-block {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 28px; padding: 2.5rem 3rem;
+      position: relative; overflow: hidden;
+    }
+    .whatif-block::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--coral), var(--mint), transparent);
+    }
+    .whatif-eyebrow { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--coral); margin-bottom: 0.6rem; }
+    .whatif-headline { font-family: 'Syne', sans-serif; font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.4rem; }
+    .whatif-sub { font-size: 1rem; color: var(--muted); margin-bottom: 2.5rem; }
+    .whatif-inner { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0; align-items: stretch; }
+    .whatif-node { display: flex; flex-direction: column; gap: 0.3rem; }
+    .whatif-node-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+    .whatif-subs { font-size: 0.88rem; color: var(--muted); }
+    .whatif-price { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; color: var(--text); line-height: 1; }
+    .whatif-price.now { color: var(--mint); }
+    .whatif-chart-col { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 1.5rem; }
+    .whatif-growth-pct {
+      margin-top: 1.8rem; display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(77,255,195,0.08); border: 1px solid rgba(77,255,195,0.2);
+      border-radius: 100px; padding: 0.45rem 1.1rem;
+      font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 800; color: var(--mint);
+    }
+    .whatif-coins {
+      margin-top: 2rem; padding: 1.3rem 1.8rem;
+      background: linear-gradient(135deg, rgba(255,107,74,0.08), rgba(77,255,195,0.06));
+      border: 1px solid rgba(255,107,74,0.18); border-radius: 18px;
+      font-size: 0.95rem; color: var(--muted); line-height: 1.7;
+    }
+    .whatif-coins strong { color: var(--text); font-weight: 600; }
+    .whatif-coins .highlight-coin { color: var(--mint); font-family: 'Syne', sans-serif; font-weight: 800; }
+    .whatif-disclaimer { font-size: 0.72rem; color: var(--muted); opacity: 0.45; margin-top: 1rem; text-align: center; }
+    @media (max-width: 768px) {
+      .whatif-block { padding: 1.8rem 1.4rem; }
+      .whatif-inner { grid-template-columns: 1fr; gap: 1.5rem; }
+      .whatif-chart-col { padding: 0; flex-direction: row; justify-content: flex-start; gap: 1rem; }
+    }
+
     /* COMPETE */
     .compete { padding: 7rem 0; }
     .compete-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
@@ -403,10 +450,70 @@
           <p class="step-desc">Your picks compete against your friends in weekly leagues and seasonal events. The best scout wins.</p>
         </div>
       </div>
+
+      <!-- WHAT IF BLOCK -->
+      <div class="whatif-wrap" id="whatif-block">
+        <div class="whatif-block">
+          <div class="whatif-eyebrow">A thought experiment</div>
+          <h3 class="whatif-headline">What if you saw it first?</h3>
+          <p class="whatif-sub">What if you bought MrBeast at 10,000 subscribers?</p>
+
+          <div class="whatif-inner">
+            <!-- START NODE -->
+            <div class="whatif-node">
+              <div class="whatif-node-label">Then</div>
+              <div class="whatif-subs">10,000 subscribers</div>
+              <div class="whatif-price">$1.00</div>
+            </div>
+
+            <!-- GROWTH CHART -->
+            <div class="whatif-chart-col">
+              <svg width="120" height="80" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#4dffc3" stop-opacity="0.9"/>
+                    <stop offset="100%" stop-color="#ff6b4a" stop-opacity="0.6"/>
+                  </linearGradient>
+                  <linearGradient id="fillGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#4dffc3" stop-opacity="0.12"/>
+                    <stop offset="100%" stop-color="#4dffc3" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <!-- area fill -->
+                <path d="M10,72 C20,70 30,65 40,58 C55,46 65,32 80,18 C90,10 100,5 110,2 L110,76 L10,76 Z" fill="url(#fillGrad)"/>
+                <!-- curve line -->
+                <path d="M10,72 C20,70 30,65 40,58 C55,46 65,32 80,18 C90,10 100,5 110,2" stroke="url(#lineGrad)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                <!-- start dot -->
+                <circle cx="10" cy="72" r="3.5" fill="#ff6b4a"/>
+                <!-- end dot -->
+                <circle cx="110" cy="2" r="4" fill="#4dffc3"/>
+                <circle cx="110" cy="2" r="7" fill="#4dffc3" opacity="0.2"/>
+              </svg>
+            </div>
+
+            <!-- NOW NODE -->
+            <div class="whatif-node" style="text-align:right; align-items:flex-end;">
+              <div class="whatif-node-label">Now</div>
+              <div class="whatif-subs">400,000,000+ subscribers</div>
+              <div class="whatif-price now">$40,000.00</div>
+            </div>
+          </div>
+
+          <div style="text-align:center;">
+            <div class="whatif-growth-pct">↑ +3,999,900% growth</div>
+          </div>
+
+          <div class="whatif-coins">
+            If you invested <strong>10,000 Virezza Coins</strong> early —
+            you'd now have <span class="highlight-coin">400,000,000 Coins.</span>
+          </div>
+        </div>
+        <p class="whatif-disclaimer">Example shown for illustrative purposes only. Creator not affiliated.</p>
+      </div>
+      <!-- END WHAT IF BLOCK -->
+
     </div>
   </section>
-
-  <section class="compete" id="compete">
     <div class="container">
       <div class="compete-inner">
         <div>
@@ -675,6 +782,18 @@
         emailForm.classList.remove('typing');
       }
     });
+  }
+
+  // WHAT-IF FADE IN
+  var whatifEl = document.getElementById('whatif-block');
+  if (whatifEl) {
+    var whatifObs = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) {
+        whatifEl.classList.add('in-view');
+        whatifObs.disconnect();
+      }
+    }, { threshold: 0.15 });
+    whatifObs.observe(whatifEl);
   }
 </script>
 
