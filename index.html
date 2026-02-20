@@ -98,7 +98,7 @@
     .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
     .btn-ghost:hover { border-color: rgba(255,255,255,0.22); background: rgba(255,255,255,0.05); }
 
-    section { position: relative; z-index: 1; }
+    section { position: relative; z-index: 2; }
     .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
 
     /* HERO */
@@ -462,9 +462,9 @@
       width: 140px;
       height: 100vh;
       pointer-events: none;
-      z-index: 0;
-      opacity: 0.18;
-      overflow: hidden;
+      z-index: 1;          /* above body::before noise (z:0), below sections (z:1+ with stacking context) */
+      opacity: 0.25;
+      overflow: hidden;    /* clip is correct — SVG is now tall enough that clipping doesn't eat the path */
     }
     .ticker-left  { left: 0; }
     .ticker-right { right: 0; }
@@ -472,23 +472,23 @@
     .ticker-left svg,
     .ticker-right svg {
       width: 100%;
-      height: 100%;
+      height: 200vh;       /* tall enough that translateY travel stays within rendered area */
       display: block;
     }
 
-    /* Left ticker: slow rightward drift via translateX */
+    /* Left: drifts upward — range is 50vh so movement is clearly perceptible */
     @keyframes tickerDriftL {
-      0%   { transform: translateY(0px); }
-      100% { transform: translateY(-320px); }
+      0%   { transform: translateY(0); }
+      100% { transform: translateY(-50vh); }
     }
-    /* Right ticker: slightly different speed */
+    /* Right: drifts downward, slower — asymmetric feel */
     @keyframes tickerDriftR {
-      0%   { transform: translateY(-260px); }
-      100% { transform: translateY(0px); }
+      0%   { transform: translateY(-50vh); }
+      100% { transform: translateY(0); }
     }
 
-    .ticker-left  .ticker-path { animation: tickerDriftL 28s linear infinite; }
-    .ticker-right .ticker-path { animation: tickerDriftR 22s linear infinite; }
+    .ticker-left  .ticker-path { animation: tickerDriftL 36s linear infinite; }
+    .ticker-right .ticker-path { animation: tickerDriftR 28s linear infinite; }
   </style>
 </head>
 <body>
