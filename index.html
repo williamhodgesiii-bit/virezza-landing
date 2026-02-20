@@ -107,6 +107,52 @@
     .hero-sub strong { color: var(--text); font-weight: 500; }
     .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
 
+    /* CHANGE 1 — hero clarity line */
+    .hero-clarity { font-size: 0.9rem; color: rgba(240,237,248,0.65); max-width: 420px; margin: -0.8rem 0 1.6rem; line-height: 1.6; letter-spacing: 0.01em; }
+
+    /* CHANGE 2 — live pill + ticker on card */
+    .card-live-pill {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      background: rgba(77,255,195,0.1); border: 1px solid rgba(77,255,195,0.25);
+      border-radius: 100px; padding: 0.15rem 0.55rem;
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em;
+      color: var(--mint); margin-bottom: 0.5rem;
+    }
+    .card-live-pill .live-dot {
+      width: 5px; height: 5px; border-radius: 50%; background: var(--mint);
+      animation: pulse 2s infinite;
+    }
+    .card-ticker { font-size: 0.7rem; color: var(--mint); margin-top: 0.4rem; opacity: 0.7; }
+
+    /* CHANGE 4 — leaderboard "you" row highlight */
+    .lb-row-you {
+      background: rgba(77,255,195,0.04);
+      border: 1px solid rgba(77,255,195,0.12) !important;
+      border-radius: 0;
+    }
+    .lb-row-you .lb-name { color: var(--text); font-weight: 600; }
+    .lb-row-you .lb-score-you { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; color: var(--muted); font-style: italic; }
+
+    /* CHANGE 6 — creator economy stat bar */
+    .stat-bar {
+      border-top: 1px solid var(--border);
+      padding: 1.6rem 0 0;
+      margin-top: 4rem;
+    }
+    .stat-bar-text {
+      font-size: 0.9rem; color: rgba(240,237,248,0.45);
+      line-height: 1.65; max-width: 640px;
+    }
+    .stat-bar-text strong { color: rgba(240,237,248,0.75); font-weight: 600; }
+
+    /* BONUS — hero→how gradient bridge + whatif depth */
+    .hero-bridge {
+      height: 80px; margin-top: -1px;
+      background: linear-gradient(to bottom, var(--bg), var(--bg2));
+      position: relative; z-index: 1;
+    }
+    .whatif-block { background: rgba(255,255,255,0.035) !important; }
+
     /* CREATOR CARDS */
     .cards-float { position: relative; height: 420px; }
     .creator-card {
@@ -398,6 +444,7 @@
           <div class="hero-tag"><div class="dot"></div>Now taking signups</div>
           <h1>Trade<br><span class="highlight">Influence.</span></h1>
           <p class="hero-sub">Virezza is the <strong>fantasy stock market for creators.</strong> Pick your favorites, track their rise, and compete with friends — all for bragging rights.</p>
+          <p class="hero-clarity">Buy creators before they blow up. Compete with friends. Win bragging rights.</p>
           <div class="hero-btns">
             <a href="#" onclick="showPage('home', 'signup'); return false;" class="btn btn-primary">Get Early Access</a>
             <a href="#" onclick="showPage('home', 'how'); return false;" class="btn btn-ghost">See How It Works</a>
@@ -405,9 +452,11 @@
         </div>
         <div class="cards-float">
           <div class="creator-card">
+            <div class="card-live-pill"><div class="live-dot"></div>LIVE</div>
             <div class="card-top"><div class="avatar" style="background:rgba(255,107,74,0.2)">🎥</div><div><div class="card-name">MrBeast</div><div class="card-handle">@mrbeast</div></div></div>
             <div class="card-price up">$412.80</div><div class="card-change up-bg">↑ +18.4%</div>
             <svg class="sparkline" viewBox="0 0 120 32" fill="none"><polyline points="0,28 20,22 40,20 60,14 80,8 100,5 120,2" stroke="#4dffc3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="card-ticker">+1.2% in the last hour</div>
           </div>
           <div class="creator-card">
             <div class="card-top"><div class="avatar" style="background:rgba(184,164,216,0.2)">✨</div><div><div class="card-name">Emma Chamberlain</div><div class="card-handle">@emmachamberlain</div></div></div>
@@ -429,9 +478,14 @@
     </div>
   </section>
 
+  <div class="hero-bridge"></div>
+
   <section class="how" id="how">
     <div class="container">
-      <div class="section-label">How it works</div>
+      <div class="stat-bar">
+        <p class="stat-bar-text"><strong>200+ million creators. Billions of fans.</strong> No way to prove you saw it first — until now.</p>
+      </div>
+      <div class="section-label" style="margin-top:3rem">How it works</div>
       <h2 class="section-title">Three steps.<br>One leaderboard.</h2>
       <p class="section-sub">No trading experience needed. If you know creators, you've got an edge.</p>
       <div class="steps-grid">
@@ -588,7 +642,7 @@
           <div class="lb-row"><div class="lb-rank gold">1</div><div class="lb-av" style="background:rgba(245,200,66,0.15)">👑</div><div class="lb-name">jordanfm</div><div class="lb-score up">+$4,210</div></div>
           <div class="lb-row"><div class="lb-rank">2</div><div class="lb-av" style="background:rgba(184,164,216,0.15)">🌙</div><div class="lb-name">nightowl99</div><div class="lb-score up">+$3,840</div></div>
           <div class="lb-row"><div class="lb-rank">3</div><div class="lb-av" style="background:rgba(255,107,74,0.15)">🔥</div><div class="lb-name">superfan_lex</div><div class="lb-score up">+$2,990</div></div>
-          <div class="lb-row"><div class="lb-rank">4</div><div class="lb-av" style="background:rgba(77,255,195,0.1)">🎯</div><div class="lb-name">you?</div><div class="lb-score" style="color:var(--muted)">Join now</div></div>
+          <div class="lb-row lb-row-you"><div class="lb-rank">4</div><div class="lb-av" style="background:rgba(77,255,195,0.12)">👤</div><div class="lb-name">You</div><div class="lb-score-you">0 Coins (yet)</div></div>
         </div>
       </div>
     </div>
@@ -600,7 +654,7 @@
         <div class="section-label" style="text-align:center">Early access</div>
         <h2 class="section-title" style="margin-bottom:0.5rem">Be first in line.</h2>
         <p>Drop your email. We'll let you know the moment Virezza goes live — plus early access perks.</p>
-        <p class="social-proof">Join <span class="count-num" id="fan-count">0</span> early fans already on the list.</p>
+        <p class="social-proof">Join <span class="count-num" id="fan-count">0</span> early fans — private beta opens to the first 2,000.</p>
         <form class="email-form" id="signup-form" onsubmit="handleSignup(event)">
           <input type="email" id="email-input" placeholder="your@email.com" required autocomplete="email" />
           <button type="submit" class="btn btn-primary">Get Early Access</button>
@@ -851,6 +905,24 @@
     }, { threshold: 0.15 });
     whatifObs.observe(whatifEl);
   }
+
+  // CHANGE 2 — gently update ticker value every ~12s so it feels live
+  (function() {
+    var ticker = document.querySelector('.card-ticker');
+    if (!ticker) return;
+    var vals = ['+0.8%', '+1.2%', '+1.5%', '+0.6%', '+2.1%', '+1.9%'];
+    var i = 1;
+    setInterval(function() {
+      ticker.style.transition = 'opacity 0.4s';
+      ticker.style.opacity = '0';
+      setTimeout(function() {
+        if (!ticker) return;
+        ticker.textContent = vals[i % vals.length] + ' in the last hour';
+        ticker.style.opacity = '0.7';
+        i++;
+      }, 420);
+    }, 12000);
+  })();
 </script>
 
 </body>
