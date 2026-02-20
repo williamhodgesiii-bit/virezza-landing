@@ -451,74 +451,36 @@
       animation: float2 6s ease-in-out infinite;
     }
 
-    /* ── TICKER RAILS — pure CSS ── */
+    /* ── TICKER RAILS — background-position animation ── */
     .ticker-left,
     .ticker-right {
       position: fixed;
-      top: 0;
+      top: 0; bottom: 0;
       width: 110px;
-      height: 100vh;
       pointer-events: none;
       z-index: 1;
-      overflow: hidden;
+      background-repeat: repeat-y;
+      background-size: 110px 420px;
+      opacity: 0.7;
     }
-    .ticker-left  { left: 0; }
-    .ticker-right { right: 0; }
-
-    /* The inner strip is 300vh tall and scrolls in a loop */
-    .ticker-track {
-      position: absolute;
-      top: 0;
+    .ticker-left {
       left: 0;
-      width: 100%;
-      height: 300vh;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='110' height='420'%3E%3Cpolyline points='72,0 58,28 80,56 50,84 68,112 42,140 74,168 36,196 62,224 28,252 70,280 22,308 60,336 32,364 52,392 40,420' stroke='%23f07264' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpolyline points='72,0 58,28 80,56 50,84 68,112 42,140 74,168 36,196 62,224 28,252 70,280 22,308 60,336 32,364 52,392 40,420' stroke='%233de8d8' stroke-width='1' fill='none' stroke-linecap='round' opacity='0.6'/%3E%3C/svg%3E");
+      animation: tickDn 18s linear infinite;
     }
-    .ticker-left  .ticker-track { animation: tickScrollDown 35s linear infinite; }
-    .ticker-right .ticker-track { animation: tickScrollUp   26s linear infinite; }
-
-    @keyframes tickScrollDown {
-      from { transform: translateY(0); }
-      to   { transform: translateY(-66.666%); }
+    .ticker-right {
+      right: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='110' height='420'%3E%3Cpolyline points='38,0 52,28 28,56 60,84 42,112 70,140 34,168 80,196 46,224 88,252 36,280 76,308 50,336 64,364 42,392 56,420' stroke='%237a8cff' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpolyline points='38,0 52,28 28,56 60,84 42,112 70,140 34,168 80,196 46,224 88,252 36,280 76,308 50,336 64,364 42,392 56,420' stroke='%233de8d8' stroke-width='1' fill='none' stroke-linecap='round' opacity='0.6'/%3E%3C/svg%3E");
+      animation: tickUp 14s linear infinite;
     }
-    @keyframes tickScrollUp {
-      from { transform: translateY(-66.666%); }
-      to   { transform: translateY(0); }
+    @keyframes tickDn {
+      from { background-position: 0 0; }
+      to   { background-position: 0 420px; }
     }
-
-    /* Each segment is one "candle row" — a horizontal zig-zag line */
-    .tick-seg {
-      position: relative;
-      height: 32px;
-      width: 100%;
+    @keyframes tickUp {
+      from { background-position: 0 0; }
+      to   { background-position: 0 -420px; }
     }
-    /* The actual line — drawn with border-bottom + clip trick */
-    .tick-seg::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-
-    /* Left ticker lines */
-    .ticker-left .tick-seg { border-bottom: 1.5px solid transparent; }
-
-    /* Right ticker lines */
-    .ticker-right .tick-seg { border-bottom: 1.5px solid transparent; }
-
-    /* Faded container */
-    .ticker-left  { opacity: 0.22; }
-    .ticker-right { opacity: 0.22; }
-
-    /* SVG lines inside each segment */
-    .ticker-left  .tick-svg,
-    .ticker-right .tick-svg {
-      display: block;
-      width: 100%;
-      height: 32px;
-    }
-
     @media (max-width: 768px) {
       .ticker-left, .ticker-right { display: none; }
     }
@@ -526,63 +488,9 @@
 </head>
 <body>
 
-<!-- ── TICKER RAILS — pure CSS scrolling lines ── -->
-<div class="ticker-left" aria-hidden="true">
-  <div class="ticker-track" id="tickTrackL"></div>
-</div>
-<div class="ticker-right" aria-hidden="true">
-  <div class="ticker-track" id="tickTrackR"></div>
-</div>
-
-<script>
-// Build ticker segments with inline SVG — runs immediately, no sizing deps
-(function() {
-  // Left pattern: x values oscillate around center-left (market zigzag)
-  var leftPts  = [72,58,80,50,68,42,74,36,62,28,70,22,60,32,52,40,64,30,56,44,68,26,72,18,60,30,50,38,62,24,70];
-  // Right pattern: x values oscillate around center-right
-  var rightPts = [38,52,28,60,42,70,34,80,46,88,36,76,50,64,42,56,60,44,68,38,58,50,40,66,52,78,44,90,56,68,46];
-
-  var SEG_H = 28; // px per segment
-  var W = 110;
-
-  function buildTrack(el, pts, colorA, colorB) {
-    var html = '';
-    // Repeat 3× so translateY loop is seamless
-    for (var rep = 0; rep < 3; rep++) {
-      for (var i = 0; i < pts.length - 1; i++) {
-        var x1 = pts[i];
-        var x2 = pts[i + 1];
-        // Color interpolation between colorA and colorB
-        var t = i / (pts.length - 1);
-        html += '<svg width="' + W + '" height="' + SEG_H + '" viewBox="0 0 ' + W + ' ' + SEG_H + '" fill="none" style="display:block">' +
-          '<line x1="' + x1 + '" y1="0" x2="' + x2 + '" y2="' + SEG_H + '" stroke="' + lerpColor(colorA, colorB, t) + '" stroke-width="1.5" stroke-linecap="round"/>' +
-          // tiny volume tick
-          '<line x1="2" y1="' + (SEG_H/2) + '" x2="' + (2 + Math.round(4 + (i%5)*2)) + '" y2="' + (SEG_H/2) + '" stroke="' + lerpColor(colorA, colorB, t) + '" stroke-width="1" stroke-opacity="0.5"/>' +
-        '</svg>';
-      }
-    }
-    el.innerHTML = html;
-  }
-
-  function lerpColor(a, b, t) {
-    // a and b are [r,g,b] arrays
-    var r = Math.round(a[0] + (b[0]-a[0])*t);
-    var g = Math.round(a[1] + (b[1]-a[1])*t);
-    var bl = Math.round(a[2] + (b[2]-a[2])*t);
-    return 'rgb('+r+','+g+','+bl+')';
-  }
-
-  var coral  = [240, 114, 100];
-  var gold   = [245, 176, 110];
-  var teal   = [ 61, 232, 216];
-  var blue   = [122, 140, 255];
-
-  var trackL = document.getElementById('tickTrackL');
-  var trackR = document.getElementById('tickTrackR');
-  if (trackL) buildTrack(trackL, leftPts,  coral, teal);
-  if (trackR) buildTrack(trackR, rightPts, blue,  gold);
-})();
-</script>
+<!-- ── TICKER RAILS ── -->
+<div class="ticker-left"  aria-hidden="true"></div>
+<div class="ticker-right" aria-hidden="true"></div>
 
 <!-- NAV -->
 <nav>
