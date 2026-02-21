@@ -1,383 +1,506 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Virezza — Trade Influence</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="assets/js/main.js" defer></script>
-  <link rel="stylesheet" href="assets/css/styles.css">
-</head>
-<body>
+/* Virezza styles — to be filled in */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-<!-- ── TICKER RAILS ── -->
-<div class="ticker-left"  aria-hidden="true"></div>
-<div class="ticker-right" aria-hidden="true"></div>
+    :root {
+      /* Backgrounds — deep navy-purple matching logo dark field */
+      --bg:  #0d0b14;
+      --bg2: #121019;
+      --bg3: #1a1628;
 
-<!-- NAV -->
-<nav>
-  <!-- Left: circle wordmark logo -->
-  <div class="nav-left">
-    <a href="#" class="logo-img-link" onclick="showPage('home'); return false;" aria-label="Virezza home">
-      <img src="https://raw.githubusercontent.com/williamhodgesiii-bit/virezza-landing/main/assets/images/circle.png" alt="Virezza" class="logo-img">
-    </a>
-  </div>
+      /* Gradient arc: coral → gold → teal → periwinkle (direct from logo sweep) */
+      --accent-start: #f07264;   /* coral-salmon */
+      --accent-mid:   #f5b06e;   /* warm gold    */
+      --accent-end:   #3de8d8;   /* mint-teal     */
+      --accent-blue:  #7a8cff;   /* periwinkle    */
 
-  <!-- Center: nav links flanking the square icon -->
-  <div class="nav-center-group">
-    <a href="#" onclick="showPage('home', 'how'); return false;">How It Works</a>
-    <a href="#" onclick="showPage('home', 'compete'); return false;">Compete</a>
-    <a href="#" class="nav-center-icon" onclick="showPage('home'); return false;" aria-label="Virezza home">
-      <img src="https://raw.githubusercontent.com/williamhodgesiii-bit/virezza-landing/main/assets/images/icon.png" alt="Virezza">
-    </a>
-    <a href="#" onclick="showPage('about'); return false;">Our Story</a>
-    <a href="#" onclick="openContact(); return false;">Contact</a>
-  </div>
+      /* Convenience aliases (replaces old named vars) */
+      --coral:    #f07264;
+      --peach:    #f5905a;
+      --lavender: #9b8fe0;
+      --mint:     #3de8d8;
+      --crimson:  #f05070;
 
-  <!-- Right: CTA -->
-  <div class="nav-right">
-    <a href="#" onclick="showPage('home', 'signup'); return false;" class="btn btn-primary" style="font-size:0.85rem; padding:0.6rem 1.2rem;">Get Early Access</a>
-  </div>
-</nav>
+      /* Gradient shorthands */
+      --gradient-primary: linear-gradient(135deg, var(--accent-start), var(--accent-mid), var(--accent-end));
+      --gradient-h:       linear-gradient(90deg,  var(--accent-start), var(--accent-mid), var(--accent-end));
+      --gradient-glow:    linear-gradient(135deg, var(--accent-start), var(--accent-blue));
 
-<!-- HOME PAGE -->
-<div id="home-page">
+      /* Text */
+      --text:  #f0edf8;
+      --muted: #7a7490;
 
-  <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="container">
-      <div class="hero-inner">
-        <div>
-          <div class="hero-tag"><div class="dot"></div>Now taking signups</div>
-          <h1>Trade<br><span class="highlight">Influence.</span></h1>
-          <p class="hero-sub">Virezza is the <strong>fantasy stock market for creators.</strong> Pick your favorites, track their rise, and compete with friends — all for bragging rights.</p>
-          <p class="hero-clarity">Buy creators before they blow up. Compete with friends. Win bragging rights.</p>
-          <div class="hero-btns">
-            <a href="#" onclick="showPage('home', 'signup'); return false;" class="btn btn-primary">Get Early Access</a>
-            <a href="#" onclick="showPage('home', 'how'); return false;" class="btn btn-ghost">See How It Works</a>
-          </div>
-        </div>
-        <div class="cards-float">
-          <div class="creator-card">
-            <div class="card-live-pill"><div class="live-dot"></div>LIVE</div>
-            <div class="card-top"><div class="avatar" style="background:rgba(240,114,100,0.18)">🎥</div><div><div class="card-name">MrBeast</div><div class="card-handle">@mrbeast</div></div></div>
-            <div class="card-price up">$412.80</div><div class="card-change up-bg">↑ +18.4%</div>
-            <svg class="sparkline" viewBox="0 0 120 32" fill="none"><polyline points="0,28 20,22 40,20 60,14 80,8 100,5 120,2" stroke="#3de8d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <div class="card-ticker">+1.2% in the last hour</div>
-          </div>
-          <div class="creator-card">
-            <div class="card-top"><div class="avatar" style="background:rgba(155,143,224,0.18)">✨</div><div><div class="card-name">Emma Chamberlain</div><div class="card-handle">@emmachamberlain</div></div></div>
-            <div class="card-price up">$198.30</div><div class="card-change up-bg">↑ +7.2%</div>
-            <svg class="sparkline" viewBox="0 0 120 32" fill="none"><polyline points="0,24 20,20 40,22 60,16 80,12 100,9 120,6" stroke="#3de8d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-          <div class="creator-card">
-            <div class="card-top"><div class="avatar" style="background:rgba(61,232,216,0.13)">🎮</div><div><div class="card-name">Kai Cenat</div><div class="card-handle">@kaicenat</div></div></div>
-            <div class="card-price up">$265.40</div><div class="card-change up-bg">↑ +11.6%</div>
-            <svg class="sparkline" viewBox="0 0 120 32" fill="none"><polyline points="0,26 20,21 40,23 60,15 80,10 100,6 120,3" stroke="#3de8d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-          <div class="creator-card">
-            <div class="card-top"><div class="avatar" style="background:rgba(255,140,107,0.15)">📱</div><div><div class="card-name">Marques Brownlee</div><div class="card-handle">@mkbhd</div></div></div>
-            <div class="card-price down">$153.75</div><div class="card-change down-bg">↓ −2.3%</div>
-            <svg class="sparkline" viewBox="0 0 120 32" fill="none"><polyline points="0,6 20,10 40,8 60,14 80,18 100,22 120,26" stroke="#f05070" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+      /* Surfaces */
+      --card:   rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.08);
+    }
 
-  <div class="hero-bridge">
-    <div class="container">
-      <div class="stat-bar">
-        <div class="stat-bar-eyebrow">The creator economy</div>
-        <h2 class="stat-bar-headline">
-          <span class="stat-accent">200+ million creators.</span><br>Billions of fans.
-        </h2>
-        <p class="stat-bar-sub">No way to prove you saw it first — until now.</p>
-      </div>
-    </div>
-  </div>
+    html { scroll-behavior: smooth; overflow-x: hidden; }
 
-  <section class="how" id="how">
-    <div class="container">
-      <div class="section-label">How it works</div>
-      <h2 class="section-title">Three steps.<br>One leaderboard.</h2>
-      <p class="section-sub">No trading experience needed. If you know creators, you've got an edge.</p>
-      <div class="steps-grid">
-        <div class="step-card">
-          <div class="step-num">STEP 01</div><span class="step-icon">🎯</span>
-          <div class="step-title">Pick creators you believe in</div>
-          <p class="step-desc">Browse the creator market and build your portfolio. Bet on the ones you think are about to blow up — before everyone else does.</p>
-        </div>
-        <div class="step-card">
-          <div class="step-num">STEP 02</div><span class="step-icon">📈</span>
-          <div class="step-title">Watch their influence move the market</div>
-          <p class="step-desc">Creator prices are driven by real metrics — views, followers, engagement. When they go viral, your portfolio goes with them.</p>
-        </div>
-        <div class="step-card">
-          <div class="step-num">STEP 03</div><span class="step-icon">🏆</span>
-          <div class="step-title">Compete and climb the leaderboard</div>
-          <p class="step-desc">Your picks compete against your friends in weekly leagues and seasonal events. The best scout wins.</p>
-        </div>
-      </div>
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      line-height: 1.6;
+    }
 
-      <!-- WHAT IF BLOCK -->
-      <div class="whatif-wrap" id="whatif-block">
-        <div class="whatif-block">
-          <div class="whatif-eyebrow">A thought experiment</div>
-          <h3 class="whatif-headline">What if you saw it first?</h3>
-          <p class="whatif-sub">What if you bought MrBeast at 10,237 subscribers?</p>
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
 
-          <div class="whatif-inner">
+    h1, h2, h3 { font-family: 'Syne', sans-serif; line-height: 1.1; }
 
-            <!-- NODES ROW — side by side above the graph -->
-            <div class="whatif-nodes-row">
-              <div class="whatif-node">
-                <div class="whatif-node-label">Then · 2014</div>
-                <div class="whatif-subs">10,237 subscribers</div>
-                <div class="whatif-price">$1.12</div>
-              </div>
-              <div class="whatif-node" style="text-align:right; align-items:flex-end;">
-                <div class="whatif-node-label">Now · 2026</div>
-                <div class="whatif-subs">412,508,391 subscribers</div>
-                <div class="whatif-price now">$4,812.47</div>
-              </div>
-            </div>
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0.4rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(13,11,20,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      min-height: 56px;
+    }
+    .logo {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.4rem;
+      letter-spacing: -0.03em; color: var(--text); text-decoration: none;
+      display: flex; align-items: center; gap: 0.1em;
+    }
+    .logo .v-mark { color: var(--coral); display: inline-block; transform: skewX(-4deg); font-style: italic; }
+    .logo-img-link { display: flex; align-items: center; text-decoration: none; }
+    .logo-img { height: 44px; width: auto; display: block; }
+    nav a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    nav a:hover { color: var(--text); }
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    /* Three-column nav */
+    .nav-left { display: flex; align-items: center; min-width: 140px; }
+    .nav-center-group {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 2rem;
+      pointer-events: auto;
+    }
+    .nav-center-icon {
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; text-decoration: none;
+      transition: transform 0.25s ease, filter 0.25s ease;
+      flex-shrink: 0; margin: 0 0.5rem;
+    }
+    .nav-center-icon:hover {
+      transform: scale(1.1);
+      filter: brightness(1.2) drop-shadow(0 0 12px rgba(125,100,255,0.55));
+    }
+    .nav-center-icon img { height: 50px; width: auto; display: block; }
+    .nav-right { display: flex; align-items: center; gap: 1.5rem; min-width: 140px; justify-content: flex-end; }
 
-            <!-- FULL-WIDTH GRAPH -->
-            <div class="whatif-chart-col">
-              <svg viewBox="0 0 560 160" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">
-                <defs>
-                  <linearGradient id="lineGradH" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
-                    <stop offset="0%"   stop-color="#f07264"/>
-                    <stop offset="45%"  stop-color="#f5b06e"/>
-                    <stop offset="100%" stop-color="#3de8d8"/>
-                  </linearGradient>
-                  <linearGradient id="fillGradV" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%"   stop-color="#3de8d8" stop-opacity="0.12"/>
-                    <stop offset="100%" stop-color="#3de8d8" stop-opacity="0"/>
-                  </linearGradient>
-                  <!-- glow filter for end dot -->
-                  <filter id="mintGlow" x="-100%" y="-100%" width="300%" height="300%">
-                    <feGaussianBlur stdDeviation="4" result="blur"/>
-                    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-                  </filter>
-                </defs>
+    /* BUTTONS */
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.6rem; border-radius: 100px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500;
+      cursor: pointer; border: none; text-decoration: none; transition: all 0.25s ease;
+    }
+    .btn-primary { background: var(--gradient-primary); color: white; }
+    .btn-primary:hover { background: var(--gradient-primary); filter: brightness(1.1); box-shadow: 0 0 28px rgba(240,114,100,0.4), 0 0 60px rgba(61,232,216,0.15); transform: translateY(-1px); }
+    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.22); background: rgba(255,255,255,0.05); }
 
-                <!-- Subtle horizontal grid lines -->
-                <line x1="40" y1="20"  x2="536" y2="20"  stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-                <line x1="40" y1="55"  x2="536" y2="55"  stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-                <line x1="40" y1="90"  x2="536" y2="90"  stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-                <!-- X axis -->
-                <line x1="40" y1="125" x2="536" y2="125" stroke="rgba(255,255,255,0.1)"  stroke-width="1"/>
+    section { position: relative; z-index: 1; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
 
-                <!-- Area fill -->
-                <!--
-                  Curve logic (log-like):
-                  2014 (x=40,  y=123) — near flat
-                  2018 (x=205, y=112) — slight uptick
-                  2022 (x=370, y=72)  — accelerating
-                  2026 (x=536, y=14)  — hockey stick peak
-                -->
-                <path d="M40,123 C80,122 140,120 205,112 C270,104 310,88 370,72 C420,58 470,32 536,14 L536,125 L40,125 Z"
-                      fill="url(#fillGradV)"/>
+    /* HERO */
+    .hero { min-height: 100vh; display: flex; align-items: center; padding-top: 60px; overflow: hidden; }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 70% 40%, rgba(240,114,100,0.11) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 20% 70%, rgba(61,232,216,0.07) 0%, transparent 70%),
+        var(--bg);
+    }
+    .hero-inner { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; width: 100%; }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(240,114,100,0.1); border: 1px solid rgba(240,114,100,0.22);
+      border-radius: 100px; padding: 0.3rem 0.9rem;
+      font-size: 0.8rem; color: var(--coral); font-weight: 500; margin-bottom: 1.5rem; letter-spacing: 0.02em;
+    }
+    .hero-tag .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--coral); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+    .hero h1 { font-size: clamp(3.5rem, 6vw, 5.5rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; margin-bottom: 0.2rem; }
+    .hero h1 .highlight { background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-sub { font-size: 1.15rem; color: var(--muted); max-width: 440px; margin: 1.2rem 0 2rem; line-height: 1.7; }
+    .hero-sub strong { color: var(--text); font-weight: 500; }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
 
-                <!-- Curve line -->
-                <path d="M40,123 C80,122 140,120 205,112 C270,104 310,88 370,72 C420,58 470,32 536,14"
-                      stroke="url(#lineGradH)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    /* CHANGE 1 — hero clarity line */
+    .hero-clarity { font-size: 0.9rem; color: rgba(240,237,248,0.65); max-width: 420px; margin: -0.8rem 0 1.6rem; line-height: 1.6; letter-spacing: 0.01em; }
 
-                <!-- Vertical tick lines (dashed, very faint) -->
-                <line x1="40"  y1="123" x2="40"  y2="126" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-                <line x1="205" y1="112" x2="205" y2="126" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="3,3"/>
-                <line x1="370" y1="72"  x2="370" y2="126" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="3,3"/>
-                <line x1="536" y1="14"  x2="536" y2="126" stroke="rgba(61,232,216,0.18)" stroke-width="1" stroke-dasharray="3,3"/>
+    /* CHANGE 2 — live pill + ticker on card */
+    .card-live-pill {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      background: rgba(61,232,216,0.1); border: 1px solid rgba(61,232,216,0.25);
+      border-radius: 100px; padding: 0.15rem 0.55rem;
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em;
+      color: var(--mint); margin-bottom: 0.5rem;
+    }
+    .card-live-pill .live-dot {
+      width: 5px; height: 5px; border-radius: 50%; background: var(--mint);
+      animation: pulse 2s infinite;
+    }
+    .card-ticker { font-size: 0.7rem; color: var(--mint); margin-top: 0.4rem; opacity: 0.7; }
 
-                <!-- Data point 1 · 2014 (coral) -->
-                <circle cx="40"  cy="123" r="4.5" fill="#f07264"/>
+    /* CHANGE 4 — leaderboard "you" row highlight */
+    .lb-row-you {
+      background: rgba(61,232,216,0.04);
+      border: 1px solid rgba(61,232,216,0.14) !important;
+      border-radius: 0;
+    }
+    .lb-row-you .lb-name { color: var(--text); font-weight: 600; }
+    .lb-row-you .lb-score-you { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; color: var(--muted); font-style: italic; }
 
-                <!-- Data point 2 · 2018 (neutral) -->
-                <circle cx="205" cy="112" r="3"   fill="rgba(155,143,224,0.6)"/>
+    /* CHANGE 6 — creator economy stat bar */
+    .stat-bar {
+      padding: 3rem 0 3.5rem;
+      margin-top: 0;
+      border-top: none;
+      text-align: center;
+    }
+    .stat-bar-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--mint); font-weight: 600; margin-bottom: 1rem;
+    }
+    .stat-bar-eyebrow::before, .stat-bar-eyebrow::after {
+      content: ''; display: block; width: 32px; height: 1px;
+      background: var(--mint); opacity: 0.4;
+    }
+    .stat-bar-headline {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      line-height: 1.15; letter-spacing: -0.02em;
+      color: var(--text); margin: 0 auto 0.9rem;
+    }
+    .stat-bar-headline .stat-accent {
+      background: var(--gradient-h); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .stat-bar-sub {
+      font-size: 1rem; color: rgba(240,237,248,0.5);
+      line-height: 1.6; max-width: 520px; margin: 0 auto;
+    }
+    .stat-bar-text {
+      font-size: 0.9rem; color: rgba(240,237,248,0.45);
+      line-height: 1.65; max-width: 640px;
+    }
+    .stat-bar-text strong { color: rgba(240,237,248,0.75); font-weight: 600; }
 
-                <!-- Data point 3 · 2022 (neutral) -->
-                <circle cx="370" cy="72"  r="3"   fill="rgba(155,143,224,0.6)"/>
+    /* hero→how gradient bridge */
+    .hero-bridge {
+      background: linear-gradient(to bottom, var(--bg), var(--bg2));
+      position: relative; z-index: 1;
+      padding-bottom: 0; margin-top: -1px;
+    }
+    .whatif-block { background: rgba(255,255,255,0.035) !important; }
 
-                <!-- Data point 4 · 2026 (mint, glowing) -->
-                <circle cx="536" cy="14"  r="5"   fill="#3de8d8" filter="url(#mintGlow)"/>
-                <circle cx="536" cy="14"  r="10"  fill="#3de8d8" opacity="0.12"/>
+    /* CREATOR CARDS */
+    .cards-float { position: relative; /* height set in UPGRADE 1 block below */ }
+    .creator-card {
+      position: absolute; background: var(--card); border: 1px solid var(--border);
+      border-radius: 20px; padding: 1.2rem 1.4rem; backdrop-filter: blur(10px); min-width: 190px;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    .creator-card:hover { transform: translateY(-6px) !important; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+    @keyframes float1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    @keyframes float2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+    .card-top { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.8rem; }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+    .card-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; }
+    .card-handle { font-size: 0.75rem; color: var(--muted); }
+    .card-price { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem; }
+    .card-change { font-size: 0.78rem; font-weight: 500; padding: 0.2rem 0.5rem; border-radius: 6px; display: inline-block; margin-top: 0.25rem; }
+    .up { color: var(--mint); }
+    .up-bg { background: rgba(61,232,216,0.1); color: var(--mint); }
+    .down { color: var(--crimson); }
+    .down-bg { background: rgba(240,80,112,0.1); color: var(--crimson); }
+    .sparkline { width: 100%; height: 32px; margin-top: 0.7rem; }
 
-                <!-- Subscriber callout labels (small, above data points) -->
-                <text x="40"  y="108" text-anchor="middle" font-size="9" font-family="DM Sans,sans-serif" fill="rgba(240,114,100,0.85)">10K</text>
-                <text x="205" y="97"  text-anchor="middle" font-size="9" font-family="DM Sans,sans-serif" fill="rgba(155,143,224,0.6)">25M</text>
-                <text x="370" y="57"  text-anchor="middle" font-size="9" font-family="DM Sans,sans-serif" fill="rgba(155,143,224,0.6)">140M</text>
-                <text x="536" y="7"   text-anchor="middle" font-size="9" font-family="DM Sans,sans-serif" fill="rgba(61,232,216,0.9)">412M</text>
+    /* HOW IT WORKS */
+    .how { padding: 5rem 0 5.5rem; background: var(--bg2); }
+    .section-label { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--coral); margin-bottom: 0.8rem; }
+    .section-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1rem; }
+    .section-sub { font-size: 1.05rem; color: var(--muted); max-width: 500px; margin-bottom: 2.5rem; }
+    .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .step-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 2rem;
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      position: relative; overflow: hidden;
+    }
+    .step-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: var(--gradient-h); opacity:0; transition:opacity 0.3s; }
+    .step-card:hover { transform: translateY(-4px); border-color: rgba(240,114,100,0.2); box-shadow: 0 16px 40px rgba(0,0,0,0.35); }
+    .step-card:hover::before { opacity: 1; }
+    .step-num { font-family: 'Syne', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; color: var(--coral); margin-bottom: 1rem; }
+    .step-icon { font-size: 2rem; margin-bottom: 1rem; display: block; }
+    .step-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .step-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.65; }
 
-                <!-- Year labels on x axis -->
-                <text x="40"  y="140" text-anchor="middle" font-size="10" font-family="DM Sans,sans-serif" fill="rgba(122,116,144,0.65)">2014</text>
-                <text x="205" y="140" text-anchor="middle" font-size="10" font-family="DM Sans,sans-serif" fill="rgba(122,116,144,0.65)">2018</text>
-                <text x="370" y="140" text-anchor="middle" font-size="10" font-family="DM Sans,sans-serif" fill="rgba(122,116,144,0.65)">2022</text>
-                <text x="536" y="140" text-anchor="middle" font-size="10" font-family="DM Sans,sans-serif" fill="rgba(61,232,216,0.75)">2026</text>
-              </svg>
-              <p style="font-size:0.72rem; color:var(--muted); opacity:0.4; margin-top:0.6rem; text-align:center;">On Virezza, creator prices grow with audience and engagement.</p>
-            </div>
+    /* WHAT IF BLOCK */
+    .whatif-wrap {
+      margin-top: 2.5rem;
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .whatif-wrap.in-view { opacity: 1; transform: translateY(0); }
+    .whatif-block {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 28px; padding: 2.5rem 3rem;
+      position: relative; overflow: hidden;
+    }
+    .whatif-block::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: var(--gradient-h);
+    }
+    .whatif-eyebrow { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--coral); margin-bottom: 0.6rem; }
+    .whatif-headline { font-family: 'Syne', sans-serif; font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.4rem; }
+    .whatif-sub { font-size: 1rem; color: var(--muted); margin-bottom: 2.5rem; }
+    .whatif-inner { display: flex; flex-direction: column; gap: 0; }
+    .whatif-nodes-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+    .whatif-node { display: flex; flex-direction: column; gap: 0.3rem; }
+    .whatif-node-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+    .whatif-subs { font-size: 0.88rem; color: var(--muted); }
+    .whatif-price { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; color: var(--text); line-height: 1; }
+    .whatif-price.now { color: var(--mint); }
+    .whatif-chart-col { display: flex; flex-direction: column; align-items: stretch; width: 100%; }
+    .whatif-chart-col svg { width: 100%; height: auto; display: block; }
+    .whatif-growth-pct {
+      margin-top: 1.8rem; display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(61,232,216,0.08); border: 1px solid rgba(61,232,216,0.2);
+      border-radius: 100px; padding: 0.45rem 1.1rem;
+      font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 800; color: var(--mint);
+    }
+    .whatif-coins {
+      margin-top: 2rem; padding: 1.3rem 1.8rem;
+      background: linear-gradient(135deg, rgba(240,114,100,0.08), rgba(61,232,216,0.06));
+      border: 1px solid rgba(240,114,100,0.16); border-radius: 18px;
+      font-size: 0.95rem; color: var(--muted); line-height: 1.7;
+    }
+    .whatif-coins strong { color: var(--text); font-weight: 600; }
+    .whatif-coins .highlight-coin { color: var(--mint); font-family: 'Syne', sans-serif; font-weight: 800; }
+    .whatif-disclaimer { font-size: 0.72rem; color: var(--muted); opacity: 0.45; margin-top: 1rem; text-align: center; }
+    @media (max-width: 768px) {
+      .whatif-block { padding: 1.8rem 1.4rem; }
+      .whatif-nodes-row { grid-template-columns: 1fr; gap: 1.2rem; }
+    }
 
-          </div><!-- end .whatif-inner -->
+    /* COMPETE */
+    .compete { padding: 5rem 0; }
+    .compete-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+    .compete-features { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2.5rem; }
+    .feature-pill { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 1.2rem; transition: all 0.25s ease; }
+    .feature-pill:hover { border-color: rgba(155,143,224,0.3); background: rgba(100,85,180,0.08); transform: translateY(-2px); }
+    .feature-emoji { font-size: 1.4rem; margin-bottom: 0.5rem; display: block; }
+    .feature-label { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+    .feature-desc { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+    .leaderboard-mock { background: var(--bg3); border: 1px solid var(--border); border-radius: 24px; overflow: hidden; }
+    .lb-header { padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.6rem; }
+    .lb-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; }
+    .lb-badge { font-size: 0.7rem; font-weight: 600; background: rgba(240,114,100,0.15); color: var(--coral); padding: 0.2rem 0.6rem; border-radius: 20px; border: 1px solid rgba(240,114,100,0.2); }
+    .lb-row { display: flex; align-items: center; gap: 1rem; padding: 0.9rem 1.5rem; border-bottom: 1px solid var(--border); transition: background 0.2s; }
+    .lb-row:last-child { border-bottom: none; }
+    .lb-row:hover { background: rgba(255,255,255,0.03); }
+    .lb-rank { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; width: 22px; color: var(--muted); }
+    .lb-rank.gold { color: #f5c842; }
+    .lb-av { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+    .lb-name { flex: 1; font-weight: 500; font-size: 0.9rem; }
+    .lb-score { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; }
 
-          <div style="text-align:center;">
-            <div class="whatif-growth-pct">↑ +429,500% growth</div>
-          </div>
+    /* SIGNUP */
+    .signup { padding: 5rem 0; background: var(--bg2); }
+    .signup-box { max-width: 560px; margin: 0 auto; text-align: center; }
+    .signup-box p { color: var(--muted); font-size: 1rem; margin-bottom: 2.5rem; }
+    .email-form { display: flex; gap: 0.6rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 100px; padding: 0.4rem 0.4rem 0.4rem 1.4rem; transition: border-color 0.3s, box-shadow 0.3s; }
+    .email-form:focus-within { border-color: rgba(240,114,100,0.45); box-shadow: 0 0 0 4px rgba(240,114,100,0.09); }
+    .email-form.typing { border-color: rgba(240,114,100,0.6); box-shadow: 0 0 0 5px rgba(240,114,100,0.12); }
+    .email-form input { flex: 1; background: none; border: none; outline: none; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; }
+    .email-form input::placeholder { color: var(--muted); }
+    .email-form .btn-primary { transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease; }
+    .email-form.typing .btn-primary { transform: scale(1.02); box-shadow: 0 0 18px rgba(240,114,100,0.3); }
+    .signup-note { font-size: 0.78rem; color: var(--muted); margin-top: 1rem; }
+    .social-proof { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.4rem; opacity: 0.75; letter-spacing: 0.01em; }
+    .social-proof .count-num { color: var(--text); font-weight: 600; }
+    @keyframes mintPulse { 0%{box-shadow:0 0 0 0 rgba(61,232,216,0.3)} 60%{box-shadow:0 0 0 16px rgba(61,232,216,0)} 100%{box-shadow:0 0 0 0 rgba(61,232,216,0)} }
+    .success-state { display: none; flex-direction: column; align-items: center; gap: 0.8rem; padding: 2rem; background: rgba(61,232,216,0.05); border: 1px solid rgba(61,232,216,0.18); border-radius: 20px; color: var(--mint); }
+    .success-state.pulsing { animation: mintPulse 1.1s ease-out 2; }
+    .success-state .check { font-size: 2rem; }
+    @keyframes fadeInUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+    .whats-next { margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid rgba(61,232,216,0.14); width: 100%; text-align: left; animation: fadeInUp 0.5s ease 0.2s both; }
+    .whats-next h4 { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mint); opacity: 0.7; margin-bottom: 0.75rem; }
+    .whats-next ol { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .whats-next ol li { font-size: 0.88rem; color: var(--muted); display: flex; align-items: baseline; gap: 0.55rem; }
+    .whats-next ol li::before { content: attr(data-n); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.75rem; color: var(--mint); opacity: 0.6; flex-shrink: 0; }
 
-          <div class="whatif-coins">
-            If you invested <strong>10,000 Virezza Coins</strong> early —
-            you'd now have <span class="highlight-coin">42,965,000 Coins.</span>
-          </div>
-        </div>
-        <p class="whatif-disclaimer">Example shown for illustrative purposes only. Creator not affiliated.</p>
-      </div>
-      <!-- END WHAT IF BLOCK -->
+    /* ABOUT */
+    #about-page { display: none; padding-top: 60px; }
+    .about-hero { padding: 5rem 0 3rem; }
+    .about-content { max-width: 680px; }
+    .about-content h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; letter-spacing: -0.04em; margin-bottom: 0.5rem; }
+    .about-divider { width: 48px; height: 3px; background: var(--gradient-h); border-radius: 3px; margin: 1.5rem 0; }
+    .about-body { padding: 3rem 0 6rem; }
+    .about-body p { font-size: 1.05rem; color: var(--muted); line-height: 1.85; margin-bottom: 1.5rem; }
+    .about-body p strong { color: var(--text); font-weight: 500; }
+    .about-body h3 { font-size: 1.4rem; font-weight: 700; margin: 2.5rem 0 0.8rem; color: var(--text); }
+    .about-quote { border-left: 3px solid var(--accent-start); padding: 0.5rem 1.5rem; margin: 2rem 0; font-size: 1.1rem; color: var(--text); font-style: italic; line-height: 1.7; }
 
-    </div>
-  </section>
+    /* FOOTER */
+    footer { padding: 1.2rem 2rem; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    footer span { font-size: 0.82rem; color: var(--muted); }
+    footer a { font-size: 0.82rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    footer a:hover { color: var(--text); }
 
-  <section class="compete" id="compete">
-    <div class="container">
-      <div class="compete-inner">
-        <div>
-          <div class="section-label">Compete</div>
-          <h2 class="section-title">This is where<br>fandom gets <span style="color:var(--lavender)">serious.</span></h2>
-          <p class="section-sub" style="margin-bottom:0">The bragging rights are real. The competition is friendly. The pressure? Very, very real.</p>
-          <div class="compete-features">
-            <div class="feature-pill"><span class="feature-emoji">🏟️</span><div class="feature-label">Custom Leagues</div><div class="feature-desc">Invite your crew, make your own rules</div></div>
-            <div class="feature-pill"><span class="feature-emoji">🌊</span><div class="feature-label">Seasonal Challenges</div><div class="feature-desc">New markets open every season</div></div>
-            <div class="feature-pill"><span class="feature-emoji">🚀</span><div class="feature-label">Creator IPOs</div><div class="feature-desc">Get in early on rising stars</div></div>
-            <div class="feature-pill"><span class="feature-emoji">🎉</span><div class="feature-label">Friendly Rivalries</div><div class="feature-desc">Settle the debate for good</div></div>
-          </div>
-        </div>
-        <div class="leaderboard-mock">
-          <div class="lb-header"><div class="lb-title">This Week's League</div><div class="lb-badge">LIVE</div></div>
-          <div class="lb-row"><div class="lb-rank gold">1</div><div class="lb-av" style="background:rgba(245,200,66,0.15)">👑</div><div class="lb-name">jordanfm</div><div class="lb-score up">+$4,210</div></div>
-          <div class="lb-row"><div class="lb-rank">2</div><div class="lb-av" style="background:rgba(155,143,224,0.15)">🌙</div><div class="lb-name">nightowl99</div><div class="lb-score up">+$3,840</div></div>
-          <div class="lb-row"><div class="lb-rank">3</div><div class="lb-av" style="background:rgba(240,114,100,0.15)">🔥</div><div class="lb-name">superfan_lex</div><div class="lb-score up">+$2,990</div></div>
-          <div class="lb-row lb-row-you"><div class="lb-rank">4</div><div class="lb-av" style="background:rgba(61,232,216,0.12)">👤</div><div class="lb-name">You</div><div class="lb-score-you">0 Coins (yet)</div></div>
-        </div>
-      </div>
-    </div>
-  </section>
+    /* ── CONTACT MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(6px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-overlay.open { display: flex; }
 
-  <section class="signup" id="signup">
-    <div class="container">
-      <div class="signup-box">
-        <div class="section-label" style="text-align:center">Early access</div>
-        <h2 class="section-title" style="margin-bottom:0.5rem">Be first in line.</h2>
-        <p>Drop your email. We'll let you know the moment Virezza goes live — plus early access perks.</p>
-        <p class="social-proof">Join <span class="count-num" id="fan-count">0</span> early fans — private beta opens to the first 2,000.</p>
-        <form class="email-form" id="signup-form" onsubmit="handleSignup(event)">
-          <input type="email" id="email-input" placeholder="your@email.com" required autocomplete="email" />
-          <button type="submit" class="btn btn-primary">Get Early Access</button>
-        </form>
-        <div class="success-state" id="success-msg">
-          <div class="check">✅</div>
-          <strong>You're on the list!</strong>
-          <span style="font-size:0.85rem; color:var(--muted)">We'll be in touch soon. Get ready to trade influence.</span>
-          <div class="whats-next">
-            <h4>Here's what happens next:</h4>
-            <ol>
-              <li data-n="1.">We're building the private beta.</li>
-              <li data-n="2.">Early members get priority access.</li>
-              <li data-n="3.">First leagues launch soon.</li>
-            </ol>
-          </div>
-        </div>
-        <p class="signup-note">No spam. No selling your info. Just the launch update.</p>
-      </div>
-    </div>
-  </section>
+    .modal {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 460px;
+      position: relative;
+    }
 
-</div>
-<!-- END HOME PAGE -->
+    .modal-close {
+      position: absolute;
+      top: 1.2rem; right: 1.4rem;
+      background: none; border: none;
+      color: var(--muted); font-size: 1.4rem;
+      cursor: pointer; line-height: 1;
+      transition: color 0.2s;
+    }
+    .modal-close:hover { color: var(--text); }
 
-<!-- ABOUT PAGE -->
-<div id="about-page">
-  <section class="about-hero">
-    <div class="container">
-      <div class="about-content">
-        <div class="section-label">Our Story</div>
-        <h1>We built the game<br>fans deserved.</h1>
-        <div class="about-divider"></div>
-      </div>
-    </div>
-  </section>
-  <section class="about-body">
-    <div class="container">
-      <div class="about-content">
-        <p><strong>We've always been fans first.</strong> Fans of creators, of communities, of the way the internet makes stars out of people who just started making stuff in their bedroom. And like a lot of fans, we spent years yelling "this person is going to blow up" — only to have no way to prove it.</p>
-        <h3>The Creator Economy is the biggest thing happening.</h3>
-        <p>Creators now move culture. They shape music charts, buying decisions, trends, and conversations faster than any traditional media ever could. There are hundreds of millions of them — and <strong>billions of people</strong> following along. But the fans who spotted them early? They got nothing except a screenshot and an "I told you so."</p>
-        <div class="about-quote">"What if knowing creators before they blow up actually meant something?"</div>
-        <p>That question is why Virezza exists. We wanted to build a place where your taste, your instincts, and your insider knowledge of who's about to pop off — <strong>actually matter.</strong></p>
-        <h3>Competition makes fandom more fun.</h3>
-        <p>Fantasy sports proved it. When your picks have stakes, you watch differently. You root harder. You care more. The same magic works with creators. When you've got a portfolio riding on your favorites — and your friends are competing against you — every viral moment, every new upload, every follower milestone hits different.</p>
-        <p>Virezza isn't about money. It's about the oldest thing in fandom: <strong>bragging rights.</strong> And finally, those rights are earned by the ones who were right all along.</p>
-        <h3>Where we're headed.</h3>
-        <p>We're building a world where being a great fan is a skill. Where discovering the next big creator earns you something. Where competition between friends happens in real time, fueled by real culture.</p>
-        <p>We're just getting started — and we want the people who get it earliest to be part of shaping what this becomes.</p>
-        <div style="margin-top:3rem">
-          <a href="#" onclick="showPage('home', 'signup'); return false;" class="btn btn-primary">Join the waitlist</a>
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
-<!-- END ABOUT PAGE -->
+    .modal h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+    .modal p { font-size: 0.9rem; color: var(--muted); margin-bottom: 1.8rem; }
 
-<p style="text-align:center; font-size:0.73rem; color:var(--muted); opacity:0.5; padding: 1.5rem 2rem 0; line-height:1.5;">Creator names shown for illustrative purposes only. No affiliation or endorsement implied.</p>
+    .contact-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+    .contact-field label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .contact-field input,
+    .contact-field textarea {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.8rem 1rem;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    .contact-field input:focus,
+    .contact-field textarea:focus { border-color: rgba(240,114,100,0.5); }
+    .contact-field textarea { resize: vertical; min-height: 110px; }
 
-<footer>
-  <a href="#" class="logo-img-link" onclick="showPage('home'); return false;" aria-label="Virezza home">
-    <img src="https://raw.githubusercontent.com/williamhodgesiii-bit/virezza-landing/main/assets/images/circle.png" alt="Virezza" class="logo-img" style="height:40px;">
-  </a>
-  <span>© 2025 Virezza. All rights reserved.</span>
-  <div style="display:flex; gap:1.5rem;">
-    <a href="#" onclick="showPage('about'); return false;">Our Story</a>
-    <a href="#" onclick="openContact(); return false;">Contact</a>
-  </div>
-</footer>
+    .contact-submit {
+      width: 100%;
+      margin-top: 0.5rem;
+      justify-content: center;
+      font-size: 1rem;
+    }
 
-<!-- CONTACT MODAL -->
-<div class="modal-overlay" id="contact-modal" onclick="handleOverlayClick(event)">
-  <div class="modal">
-    <button class="modal-close" onclick="closeContact()">✕</button>
+    .contact-success {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      text-align: center;
+      padding: 1rem 0;
+    }
+    .contact-success .check { font-size: 2.5rem; }
+    .contact-success strong { font-size: 1.1rem; }
+    .contact-success span { font-size: 0.85rem; color: var(--muted); }
 
-    <div id="contact-form-wrap">
-      <h3>Say hello 👋</h3>
-      <p>Got a question, idea, or just want to reach out? We'll get back to you.</p>
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .cards-float { height: 380px; }
+      .creator-card { min-width: 150px; }
+      .steps-grid { grid-template-columns: 1fr; gap: 1rem; }
+      .compete-inner { grid-template-columns: 1fr; }
+      .compete-features { grid-template-columns: 1fr 1fr; }
+      .nav-links { display: none; }
+      .email-form { flex-direction: column; border-radius: 16px; padding: 1rem; }
+      .email-form input { padding: 0.5rem 0; }
+      .btn { width: 100%; justify-content: center; }
+      footer { flex-direction: column; text-align: center; }
+    }
 
-      <form onsubmit="handleContact(event)">
-        <div class="contact-field">
-          <label>Your Name</label>
-          <input type="text" id="contact-name" placeholder="Jane Smith" required />
-        </div>
-        <div class="contact-field">
-          <label>Your Email</label>
-          <input type="email" id="contact-email" placeholder="jane@email.com" required />
-        </div>
-        <div class="contact-field">
-          <label>Message</label>
-          <textarea id="contact-message" placeholder="What's on your mind?" required></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary contact-submit">Send Message</button>
-      </form>
-    </div>
+    /* ── UPGRADE 1 — expanded cards-float ── */
+    .cards-float { position: relative; height: 680px; }
 
-    <div class="contact-success" id="contact-success">
-      <div class="check">✅</div>
-      <strong>Message sent!</strong>
-      <span>We'll get back to you soon.</span>
-    </div>
-  </div>
-</div>
+    /* More spread out — each card clearly visible, stagger left/right */
+    .creator-card:nth-child(1) {
+      top: 0px; left: 0px;
+      animation: float1 6s ease-in-out infinite;
+    }
+    .creator-card:nth-child(2) {
+      top: 120px; right: 0px;
+      animation: float2 7.5s ease-in-out infinite;
+    }
+    .creator-card:nth-child(3) {
+      top: 340px; left: 20px;
+      animation: float1 8s ease-in-out infinite reverse;
+    }
+    .creator-card:nth-child(4) {
+      top: 460px; right: 12px;
+      animation: float2 6s ease-in-out infinite;
+    }
 
-
-</body>
-</html>
+    /* ── TICKER RAILS ── */
+    .ticker-left,
+    .ticker-right {
+      position: fixed;
+      top: 0; bottom: 0;
+      width: 110px;
+      pointer-events: none;
+      z-index: 10;
+      background-repeat: repeat-y;
+      background-size: 110px 1000px;
+      opacity: 0.55;
+    }
+    .ticker-left  { left: 0;  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='110' height='1000'%3E%3Cpolyline points='60,0 62,14 58,26 64,36 60,48 65,58 72,70 78,80 82,90 80,100 82,114 78,124 82,136 76,148 80,158 60,175 52,192 48,206 52,220 50,232 54,244 50,256 54,266 68,278 80,290 90,300 88,312 86,326 90,338 84,352 88,364 76,380 68,396 62,410 68,424 74,436 72,448 78,460 76,472 84,484 88,498 84,512 90,524 82,540 74,556 66,572 60,588 62,604 58,618 64,630 60,644 62,658 58,668 64,678 60,690 65,700 72,712 78,722 80,732 78,744 76,758 72,770 68,782 64,794 62,808 58,822 66,834 60,848 64,862 70,872 76,882 72,894 78,906 74,918 80,930 76,942 68,956 62,968 60,980 62,992 60,1000' stroke='%23f5b06e' stroke-width='8' fill='none' stroke-linecap='round' stroke-linejoin='round' opacity='0.2'/%3E%3Cpolyline points='60,0 62,14 58,26 64,36 60,48 65,58 72,70 78,80 82,90 80,100 82,114 78,124 82,136 76,148 80,158 60,175 52,192 48,206 52,220 50,232 54,244 50,256 54,266 68,278 80,290 90,300 88,312 86,326 90,338 84,352 88,364 76,380 68,396 62,410 68,424 74,436 72,448 78,460 76,472 84,484 88,498 84,512 90,524 82,540 74,556 66,572 60,588 62,604 58,618 64,630 60,644 62,658 58,668 64,678 60,690 65,700 72,712 78,722 80,732 78,744 76,758 72,770 68,782 64,794 62,808 58,822 66,834 60,848 64,862 70,872 76,882 72,894 78,906 74,918 80,930 76,942 68,956 62,968 60,980 62,992 60,1000' stroke='%23f07264' stroke-width='2.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");  animation: tickDn 32s linear infinite; }
+    .ticker-right { right: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='110' height='1000'%3E%3Cpolyline points='55,0 42,16 32,30 38,42 52,54 62,64 58,74 46,88 36,104 28,118 24,132 38,144 54,154 66,164 76,174 78,188 74,200 80,210 76,222 82,232 92,244 88,258 76,272 68,286 64,300 66,314 62,326 68,336 64,348 74,360 82,372 78,386 84,398 80,412 76,424 82,434 76,448 80,460 72,476 64,492 58,508 54,522 56,538 52,552 56,566 55,582 42,598 32,612 38,624 52,636 62,648 58,660 46,674 36,688 28,702 24,716 38,728 54,740 66,752 76,762 78,774 72,786 65,798 55,810 42,826 32,840 38,854 52,866 62,876 58,888 46,902 36,916 42,928 50,940 56,952 52,964 56,976 55,1000' stroke='%233de8d8' stroke-width='8' fill='none' stroke-linecap='round' stroke-linejoin='round' opacity='0.2'/%3E%3Cpolyline points='55,0 42,16 32,30 38,42 52,54 62,64 58,74 46,88 36,104 28,118 24,132 38,144 54,154 66,164 76,174 78,188 74,200 80,210 76,222 82,232 92,244 88,258 76,272 68,286 64,300 66,314 62,326 68,336 64,348 74,360 82,372 78,386 84,398 80,412 76,424 82,434 76,448 80,460 72,476 64,492 58,508 54,522 56,538 52,552 56,566 55,582 42,598 32,612 38,624 52,636 62,648 58,660 46,674 36,688 28,702 24,716 38,728 54,740 66,752 76,762 78,774 72,786 65,798 55,810 42,826 32,840 38,854 52,866 62,876 58,888 46,902 36,916 42,928 50,940 56,952 52,964 56,976 55,1000' stroke='%237a8cff' stroke-width='2.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); animation: tickUp 24s linear infinite; }
+    @keyframes tickDn { from { background-position: 0 0; } to { background-position: 0 1000px; } }
+    @keyframes tickUp { from { background-position: 0 0; } to { background-position: 0 -1000px; } }
+    @media (max-width: 768px) { .ticker-left, .ticker-right { display: none; } } }
