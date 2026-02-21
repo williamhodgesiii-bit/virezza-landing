@@ -73,7 +73,7 @@
     }
     .logo .v-mark { color: var(--coral); display: inline-block; transform: skewX(-4deg); font-style: italic; }
     .logo-img-link { display: flex; align-items: center; text-decoration: none; }
-    .logo-img { height: 34px; width: auto; display: block; }
+    .logo-img { height: 52px; width: auto; display: block; }
     nav a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
     nav a:hover { color: var(--text); }
     .nav-links { display: flex; gap: 2rem; align-items: center; }
@@ -94,7 +94,7 @@
       transform: scale(1.1);
       filter: brightness(1.2) drop-shadow(0 0 12px rgba(125,100,255,0.55));
     }
-    .nav-center-icon img { height: 58px; width: auto; display: block; }
+    .nav-center-icon img { height: 64px; width: auto; display: block; }
     .nav-right { display: flex; align-items: center; gap: 1.5rem; min-width: 140px; justify-content: flex-end; }
 
     /* BUTTONS */
