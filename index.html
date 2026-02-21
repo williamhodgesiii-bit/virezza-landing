@@ -37,11 +37,23 @@
     <a href="#" onclick="openContact(); return false;">Contact</a>
   </div>
 
-  <!-- Right: CTA -->
+  <!-- Right: desktop CTA + mobile hamburger -->
   <div class="nav-right">
-    <a href="#" onclick="showPage('home', 'signup'); return false;" class="btn btn-primary" style="font-size:0.85rem; padding:0.6rem 1.2rem;">Get Early Access</a>
+    <a href="#" onclick="showPage('home', 'signup'); return false;" class="btn btn-primary nav-cta-desktop" style="font-size:0.85rem; padding:0.6rem 1.2rem;">Get Early Access</a>
+    <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+
+<!-- MOBILE DROPDOWN -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#" onclick="showPage('home','how'); toggleMobileMenu(); return false;">How It Works</a>
+  <a href="#" onclick="showPage('home','compete'); toggleMobileMenu(); return false;">Compete</a>
+  <a href="#" onclick="showPage('about'); toggleMobileMenu(); return false;">Our Story</a>
+  <a href="#" onclick="openContact(); toggleMobileMenu(); return false;">Contact</a>
+  <a href="#" onclick="showPage('home','signup'); toggleMobileMenu(); return false;" class="mobile-menu-cta">Get Early Access</a>
+</div>
 
 <!-- HOME PAGE -->
 <div id="home-page">
@@ -335,7 +347,7 @@
 
 <footer>
   <a href="#" class="logo-img-link" onclick="showPage('home'); return false;" aria-label="Virezza home">
-    <img src="https://raw.githubusercontent.com/williamhodgesiii-bit/virezza-landing/main/assets/images/circle.png" alt="Virezza" class="logo-img" style="height:40px;">
+    <img src="https://raw.githubusercontent.com/williamhodgesiii-bit/virezza-landing/main/assets/images/circle.png" alt="Virezza" class="logo-img" style="height:38px;">
   </a>
   <span>© 2025 Virezza. All rights reserved.</span>
   <div style="display:flex; gap:1.5rem;">
