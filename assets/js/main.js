@@ -1,3 +1,23 @@
+// MOBILE MENU TOGGLE
+  function toggleMobileMenu() {
+    var menu = document.getElementById('mobile-menu');
+    var ham  = document.getElementById('hamburger');
+    if (!menu) return;
+    menu.classList.toggle('is-open');
+    ham.classList.toggle('is-open');
+  }
+
+  // Close mobile menu on outside click
+  document.addEventListener('click', function(e) {
+    var menu = document.getElementById('mobile-menu');
+    var ham  = document.getElementById('hamburger');
+    if (!menu || !menu.classList.contains('is-open')) return;
+    if (!menu.contains(e.target) && !ham.contains(e.target)) {
+      menu.classList.remove('is-open');
+      ham.classList.remove('is-open');
+    }
+  });
+
 // Virezza scripts
   // SUPABASE
   var sbClient = window.supabase.createClient(
